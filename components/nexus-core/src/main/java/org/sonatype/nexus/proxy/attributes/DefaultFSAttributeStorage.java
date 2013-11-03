@@ -27,8 +27,10 @@ import org.sonatype.nexus.configuration.application.ApplicationConfiguration;
 import org.sonatype.nexus.proxy.access.Action;
 import org.sonatype.nexus.proxy.item.RepositoryItemUid;
 import org.sonatype.nexus.proxy.item.RepositoryItemUidLock;
+import org.sonatype.nexus.util.file.DirSupport;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.io.Closeables;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -82,12 +84,11 @@ public class DefaultFSAttributeStorage
     }
     else {
       getLogger().info("Attribute storage directory does not exists, creating it here: " + workingDirectory);
-
-      if (!workingDirectory.mkdirs()) {
-        if (!workingDirectory.isDirectory()) {
-          throw new IllegalArgumentException("Could not create the attribute storage directory on path "
-              + workingDirectory.getAbsolutePath());
-        }
+      try {
+        DirSupport.mkdir(workingDirectory.toPath());
+      }
+      catch (IOException e) {
+        Throwables.propagate(e);
       }
     }
 
@@ -185,8 +186,7 @@ public class DefaultFSAttributeStorage
         }
 
         File target = getFileFromBase(uid);
-
-        target.getParentFile().mkdirs();
+        DirSupport.mkdir(target.getParentFile().toPath());
 
         if (target.getParentFile().exists() && target.getParentFile().isDirectory()) {
           FileOutputStream fos = null;

@@ -51,6 +51,7 @@ import org.sonatype.nexus.proxy.storage.local.AbstractLocalRepositoryStorage;
 import org.sonatype.nexus.proxy.utils.RepositoryStringUtils;
 import org.sonatype.nexus.proxy.wastebasket.Wastebasket;
 import org.sonatype.nexus.util.ItemPathUtils;
+import org.sonatype.nexus.util.file.DirSupport;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Closeables;
@@ -132,9 +133,12 @@ public class DefaultFSLocalRepositoryStorage
       }
     }
     else {
-      if (!file.mkdirs()) {
+      try {
+        DirSupport.mkdir(file.toPath());
+      }
+      catch (IOException e) {
         throw new LocalStorageException("Could not create the baseDir directory for repository \""
-            + repository.getName() + "\" (ID=\"" + repository.getId() + "\") on path " + file.getAbsolutePath());
+            + repository.getName() + "\" (ID=\"" + repository.getId() + "\") on path " + file.getAbsolutePath(), e);
       }
     }
 
@@ -150,7 +154,13 @@ public class DefaultFSLocalRepositoryStorage
       throws LocalStorageException
   {
     if (!repoBase.exists()) {
-      repoBase.mkdir();
+      try {
+        DirSupport.mkdir(repoBase.toPath());
+      }
+      catch (IOException e) {
+        throw new LocalStorageException(
+            "Cannot create repoBase directory at " + repoBase.getAbsolutePath() + " for repository " + repository, e);
+      }
     }
 
     File result = null;
@@ -242,9 +252,7 @@ public class DefaultFSLocalRepositoryStorage
           }
           catch (NoSuchRepositoryException e) {
             getLogger().warn("Stale link object found on UID: {}, deleting it.", uid);
-
-            target.delete();
-
+            DirSupport.delete(target.toPath());
             throw new ItemNotFoundException(reasonFor(request, repository,
                 "Path %s not found in local storage of repository %s", request.getRequestPath(),
                 RepositoryStringUtils.getHumanizedNameString(repository)), e);

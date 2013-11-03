@@ -14,6 +14,7 @@
 package org.sonatype.nexus.proxy.repository;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Map;
 
@@ -34,8 +35,10 @@ import org.sonatype.nexus.proxy.LocalStorageException;
 import org.sonatype.nexus.proxy.registry.RepositoryRegistry;
 import org.sonatype.nexus.proxy.registry.RepositoryTypeRegistry;
 import org.sonatype.nexus.proxy.storage.local.LocalRepositoryStorage;
+import org.sonatype.nexus.util.file.DirSupport;
 
-import org.codehaus.plexus.util.StringUtils;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -109,15 +112,20 @@ public abstract class AbstractRepositoryConfigurator
     String localUrl = null;
     boolean usingDefaultLocalUrl = false;
 
-    if (repo.getLocalStorage() != null && !StringUtils.isEmpty(repo.getLocalStorage().getUrl())) {
+    if (repo.getLocalStorage() != null && !Strings.isNullOrEmpty(repo.getLocalStorage().getUrl())) {
       localUrl = repo.getLocalStorage().getUrl();
     }
     else {
       localUrl = repo.defaultLocalStorageUrl;
       usingDefaultLocalUrl = true;
 
-      // Default dir is going to be valid
-      defaultStorageFile.mkdirs();
+      try {
+        // Default dir is going to be valid
+        DirSupport.mkdir(defaultStorageFile.toPath());
+      }
+      catch (IOException e) {
+        Throwables.propagate(e);
+      }
     }
 
     if (repo.getLocalStorage() == null) {
