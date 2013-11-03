@@ -48,6 +48,7 @@
     <module>basic</module>
     <module>capabilities</module>
     <module>indexer</module>
+    <module>es</module>
     <module>internal</module>
     <module>maven</module>
     <module>osgi</module>

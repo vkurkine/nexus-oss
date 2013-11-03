@@ -1,0 +1,4 @@
+# defaults
+path:
+  logs: ${nexus-work}/es/logs
+  data: ${nexus-work}/es/data
