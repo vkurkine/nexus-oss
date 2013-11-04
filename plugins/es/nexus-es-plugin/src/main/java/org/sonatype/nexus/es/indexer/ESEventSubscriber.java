@@ -52,6 +52,6 @@ public class ESEventSubscriber
 
   @Subscribe
   public void on(final RepositoryConfigurationUpdatedEvent evt) {
-    //
+    // nothing?
   }
 }
