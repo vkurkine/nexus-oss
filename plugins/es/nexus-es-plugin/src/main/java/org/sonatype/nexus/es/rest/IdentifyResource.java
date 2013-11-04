@@ -57,8 +57,8 @@ public class IdentifyResource
   @GET
   @Path("/{sha1}")
   @Produces({APPLICATION_XML, APPLICATION_JSON})
-  @RequiresPermissions("nexus:identify") // TODO
-  public String get(final @PathParam("sha1") String sha1)
+  @RequiresPermissions(ESPlugin.PERMISSION_PREFIX + "read") // TODO
+  public Object get(final @PathParam("sha1") String sha1)
   {
     return searcher.searchBySha1(sha1);
   }
