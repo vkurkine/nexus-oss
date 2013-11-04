@@ -1,4 +1,9 @@
 # defaults
+node:
+  name: nexus
+  local: true
+cluster:
+  name: nexus
 path:
   logs: ${nexus-work}/es/logs
   data: ${nexus-work}/es/data
