@@ -33,6 +33,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.indices.IndexAlreadyExistsException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -57,10 +58,15 @@ public class Indexer
   }
 
   public void repositoryAdd(final Repository repository) {
-    final CreateIndexResponse create = nodeManager.indicesAdminClient()
-        .create(new CreateIndexRequest(repository.getId())).actionGet();
-    if (!create.isAcknowledged()) {
-      log.error("Index creation for repository {} was not ACKed!", repository);
+    try {
+      final CreateIndexResponse create = nodeManager.indicesAdminClient()
+          .create(new CreateIndexRequest(repository.getId())).actionGet();
+      if (!create.isAcknowledged()) {
+        log.error("Index creation for repository {} was not ACKed!", repository);
+      }
+    }
+    catch (final IndexAlreadyExistsException e) {
+      // silently get over it, this happens on reboot for example
     }
   }
 
