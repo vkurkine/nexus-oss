@@ -25,6 +25,7 @@ import javax.inject.Singleton;
 import org.sonatype.configuration.ConfigurationException;
 import org.sonatype.nexus.configuration.ConfigurationChangeEvent;
 import org.sonatype.nexus.configuration.application.NexusConfiguration;
+import org.sonatype.nexus.events.EventSubscriberHost;
 import org.sonatype.nexus.plugins.NexusPluginManager;
 import org.sonatype.nexus.plugins.PluginManagerResponse;
 import org.sonatype.nexus.proxy.events.NexusInitializedEvent;
@@ -68,11 +69,13 @@ public class NxApplication
 
   private final RepositoryRegistry repositoryRegistry;
 
+  private final EventSubscriberHost eventSubscriberHost;
+
   @Inject
   public NxApplication(final EventBus eventBus, final NexusConfiguration nexusConfiguration,
       final NexusPluginManager nexusPluginManager, final ApplicationStatusSource applicationStatusSource,
       final SecuritySystem securitySystem, final NexusScheduler nexusScheduler,
-      final RepositoryRegistry repositoryRegistry)
+      final RepositoryRegistry repositoryRegistry, final EventSubscriberHost eventSubscriberHost)
   {
     this.eventBus = checkNotNull(eventBus);
     this.applicationStatusSource = checkNotNull(applicationStatusSource);
@@ -81,6 +84,7 @@ public class NxApplication
     this.securitySystem = checkNotNull(securitySystem);
     this.nexusScheduler = checkNotNull(nexusScheduler);
     this.repositoryRegistry = checkNotNull(repositoryRegistry);
+    this.eventSubscriberHost = checkNotNull(eventSubscriberHost);
 
     logInitialized();
 
@@ -95,8 +99,10 @@ public class NxApplication
       }
     }
 
+    // register core and plugin contributed subscribers, start dispatching events to them
+    eventSubscriberHost.startup();
+
     applicationStatusSource.setState(SystemState.STOPPED);
-    applicationStatusSource.getSystemStatus().setOperationMode(OperationMode.STANDALONE);
     applicationStatusSource.getSystemStatus().setInitializedAt(new Date());
     eventBus.post(new NexusInitializedEvent(this));
   }
@@ -170,13 +176,13 @@ public class NxApplication
       applicationStatusSource.getSystemStatus().setState(SystemState.BROKEN_IO);
       applicationStatusSource.getSystemStatus().setErrorCause(e);
       log.error("Could not start Nexus, bad IO exception!", e);
-      Throwables.propagate(e);
+      throw Throwables.propagate(e);
     }
     catch (ConfigurationException e) {
       applicationStatusSource.getSystemStatus().setState(SystemState.BROKEN_CONFIGURATION);
       applicationStatusSource.getSystemStatus().setErrorCause(e);
       log.error("Could not start Nexus, user configuration exception!", e);
-      Throwables.propagate(e);
+      throw Throwables.propagate(e);
     }
   }
 
@@ -188,6 +194,7 @@ public class NxApplication
     // kill services + notify
     nexusScheduler.shutdown();
     eventBus.post(new NexusStoppedEvent(this));
+    eventSubscriberHost.shutdown();
     nexusConfiguration.dropInternals();
     securitySystem.stop();
     applicationStatusSource.getSystemStatus().setState(SystemState.STOPPED);

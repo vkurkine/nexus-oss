@@ -13,14 +13,14 @@
 
 package org.sonatype.nexus.plugins.events;
 
+import org.sonatype.nexus.events.AbstractEvent;
 import org.sonatype.nexus.plugins.NexusPluginManager;
-import org.sonatype.plexus.appevents.AbstractEvent;
-import org.sonatype.plexus.appevents.Event;
 import org.sonatype.plugin.metadata.GAVCoordinate;
 
 /**
- * This {@link Event} is triggered when a Nexus plugin fails during activation.
+ * This event is triggered when a Nexus plugin fails during activation.
  */
+@Deprecated
 public final class PluginRejectedEvent
     extends AbstractEvent<NexusPluginManager>
 {
@@ -47,16 +47,8 @@ public final class PluginRejectedEvent
   // Public methods
   // ----------------------------------------------------------------------
 
-  public GAVCoordinate getPluginCoordinates() {
-    return gav;
-  }
-
   public Throwable getReason() {
     return reason;
-  }
-
-  public NexusPluginManager getNexusPluginManager() {
-    return getEventSender();
   }
 
   @Override

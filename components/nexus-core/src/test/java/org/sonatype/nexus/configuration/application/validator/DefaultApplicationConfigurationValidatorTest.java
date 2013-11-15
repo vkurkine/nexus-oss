@@ -37,7 +37,6 @@ import org.sonatype.nexus.proxy.repository.ShadowRepository;
 import org.sonatype.nexus.test.NexusTestSupport;
 import org.sonatype.nexus.util.ExternalConfigUtil;
 
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -79,12 +78,8 @@ public class DefaultApplicationConfigurationValidatorTest
   {
     NexusConfigurationXpp3Reader reader = new NexusConfigurationXpp3Reader();
 
-    Reader fr = new FileReader(configFile);
-    try {
+    try (Reader fr = new FileReader(configFile)) {
       return reader.read(fr);
-    }
-    finally {
-      IOUtil.close(fr);
     }
 
   }
@@ -94,14 +89,8 @@ public class DefaultApplicationConfigurationValidatorTest
   {
     NexusConfigurationXpp3Writer writer = new NexusConfigurationXpp3Writer();
 
-    Writer fw = null;
-    try {
-      fw = new FileWriter(pathToConfig);
-
+    try (Writer fw = new FileWriter(pathToConfig)) {
       writer.write(fw, config);
-    }
-    finally {
-      IOUtil.close(fw);
     }
   }
 
@@ -179,45 +168,6 @@ public class DefaultApplicationConfigurationValidatorTest
     assertThat(response.isModified(), is(false));
 
     assertThat(response.getValidationErrors(), hasSize(greaterThan(0)));
-    assertThat(response.getValidationWarnings(), hasSize(0));
-  }
-
-  @Test
-  public void testNexus1710Bad()
-      throws Exception
-  {
-
-    // this one is easy because you can compare:
-    // /org/sonatype/nexus/configuration/upgrade/nexus1710/nexus.xml.result-bad
-    // with
-    // /org/sonatype/nexus/configuration/upgrade/nexus1710/nexus.xml.result
-    // and you have the diff, and you already have to manually update the good one.
-
-    // this was before fix: groupId/repoId name clash
-    ValidationResponse response = underTest.validateModel(new ValidationRequest(
-        getConfigurationFromStream(getClass().getResourceAsStream(
-            "/org/sonatype/nexus/configuration/upgrade/nexus1710/nexus.xml.result-bad"))));
-
-    assertThat(response.isValid(), is(false));
-    assertThat(response.isModified(), is(false));
-
-    assertThat(response.getValidationErrors(), hasSize(1));
-    assertThat(response.getValidationWarnings(), hasSize(0));
-  }
-
-  @Test
-  public void testNexus1710Good()
-      throws Exception
-  {
-    // this is after fix: groupId is appended by "-group" to resolve clash
-    ValidationResponse response = underTest.validateModel(new ValidationRequest(
-        getConfigurationFromStream(getClass().getResourceAsStream(
-            "/org/sonatype/nexus/configuration/upgrade/nexus1710/nexus.xml.result"))));
-
-    assertThat(response.isValid(), is(true));
-    assertThat(response.isModified(), is(false));
-
-    assertThat(response.getValidationErrors(), hasSize(0));
     assertThat(response.getValidationWarnings(), hasSize(0));
   }
 
