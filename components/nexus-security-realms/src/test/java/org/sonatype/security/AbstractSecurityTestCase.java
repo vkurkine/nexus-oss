@@ -25,19 +25,19 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 
-import org.sonatype.guice.bean.containers.InjectedTestCase;
-import org.sonatype.inject.BeanScanning;
 import org.sonatype.security.configuration.model.SecurityConfiguration;
 import org.sonatype.security.configuration.source.SecurityConfigurationSource;
 import org.sonatype.security.guice.SecurityModule;
 import org.sonatype.security.model.Configuration;
 import org.sonatype.security.model.io.xpp3.SecurityConfigurationXpp3Reader;
-import org.sonatype.sisu.ehcache.CacheManagerComponent;
 
 import com.google.inject.Binder;
+import net.sf.ehcache.CacheManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.realm.Realm;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.space.BeanScanning;
 
 public abstract class AbstractSecurityTestCase
     extends InjectedTestCase
@@ -96,7 +96,7 @@ public abstract class AbstractSecurityTestCase
   {
     try {
       lookup(SecuritySystem.class).stop();
-      lookup(CacheManagerComponent.class).shutdown();
+      lookup(CacheManager.class).shutdown();
     }
     finally {
       super.tearDown();

@@ -25,9 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.gossip.support.DC;
-import org.sonatype.guice.bean.locators.BeanLocator;
-import org.sonatype.inject.BeanEntry;
-import org.sonatype.inject.EagerSingleton;
 import org.sonatype.sisu.goodies.lifecycle.LifecycleSupport;
 
 import com.google.common.base.Throwables;
@@ -40,6 +37,9 @@ import com.sun.net.httpserver.HttpServer;
 import groovyx.remote.server.Receiver;
 import groovyx.remote.transport.http.RemoteControlHttpHandler;
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+import org.eclipse.sisu.BeanEntry;
+import org.eclipse.sisu.EagerSingleton;
+import org.eclipse.sisu.inject.BeanLocator;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -55,7 +55,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class RemoteControl
     extends LifecycleSupport
 {
-  private static final String CPREFIX = "${groovyremote.";
+  private static final String CPREFIX = "${nexus.groovyremote.";
 
   private final BeanLocator beanLocator;
 
@@ -177,11 +177,11 @@ public class RemoteControl
       return lookup(type(typeName), name);
     }
 
-    public <Q extends Annotation, T> Iterable<BeanEntry<Q, T>> locate(final Key<T> key) {
+    public <Q extends Annotation, T> Iterable<? extends BeanEntry<Q, T>> locate(final Key<T> key) {
       return beanLocator.locate(key);
     }
 
-    public <Q extends Annotation, T> Iterable<BeanEntry<Q, T>> locate(final Class<T> type) {
+    public <Q extends Annotation, T> Iterable<? extends BeanEntry<Q, T>> locate(final Class<T> type) {
       return beanLocator.locate(Key.get(type));
     }
   }

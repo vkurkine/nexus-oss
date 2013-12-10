@@ -20,19 +20,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 
-import org.sonatype.guice.bean.binders.ParameterKeys;
-import org.sonatype.guice.bean.binders.SpaceModule;
-import org.sonatype.guice.bean.binders.WireModule;
-import org.sonatype.guice.bean.reflect.URLClassSpace;
-import org.sonatype.inject.BeanScanning;
 import org.sonatype.security.SecuritySystem;
 import org.sonatype.security.web.ProtectedPathManager;
-import org.sonatype.sisu.ehcache.CacheManagerComponent;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import net.sf.ehcache.CacheManager;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -47,6 +42,11 @@ import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.eclipse.sisu.space.BeanScanning;
+import org.eclipse.sisu.space.SpaceModule;
+import org.eclipse.sisu.space.URLClassSpace;
+import org.eclipse.sisu.wire.ParameterKeys;
+import org.eclipse.sisu.wire.WireModule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,7 +114,7 @@ public class SecurityWebModuleTest
   @After
   public void stopCache() {
     if (injector != null) {
-      injector.getInstance(CacheManagerComponent.class).shutdown();
+      injector.getInstance(CacheManager.class).shutdown();
     }
   }
 

@@ -14,12 +14,10 @@
 package org.sonatype.nexus.configuration.application;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import org.sonatype.configuration.ConfigurationException;
 import org.sonatype.configuration.validation.InvalidConfigurationException;
-import org.sonatype.nexus.configuration.model.CRemoteNexusInstance;
 import org.sonatype.nexus.configuration.model.CRepository;
 import org.sonatype.nexus.proxy.AccessDeniedException;
 import org.sonatype.nexus.proxy.NoSuchRepositoryException;
@@ -52,33 +50,6 @@ public interface MutableConfiguration
   String getAnonymousUsername();
 
   String getAnonymousPassword();
-
-  /**
-   * Set anonymous access.
-   *
-   * @deprecated Use {@link #setAnonymousAccess(boolean, String, String)} instead.
-   */
-  @Deprecated
-  void setAnonymousAccessEnabled(boolean enabled)
-      throws IOException;
-
-  /**
-   * Set anonymous username.
-   *
-   * @deprecated Use {@link #setAnonymousAccess(boolean, String, String)} instead.
-   */
-  @Deprecated
-  void setAnonymousUsername(String val)
-      throws InvalidConfigurationException;
-
-  /**
-   * Set anonymous password.
-   *
-   * @deprecated Use {@link #setAnonymousAccess(boolean, String, String)} instead.
-   */
-  @Deprecated
-  void setAnonymousPassword(String val)
-      throws InvalidConfigurationException;
 
   List<String> getRealms();
 
@@ -147,16 +118,6 @@ public interface MutableConfiguration
   // FIXME: This will be removed: NEXUS-2363 vvvvv
   // CRemoteNexusInstance
 
-  Collection<CRemoteNexusInstance> listRemoteNexusInstances();
-
-  CRemoteNexusInstance readRemoteNexusInstance(String alias)
-      throws IOException;
-
-  void createRemoteNexusInstance(CRemoteNexusInstance settings)
-      throws IOException;
-
-  void deleteRemoteNexusInstance(String alias)
-      throws IOException;
   // FIXME: This will be removed: NEXUS-2363 ^^^^^
 
 }

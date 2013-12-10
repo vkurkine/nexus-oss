@@ -26,11 +26,9 @@ public abstract class AbstractNexusProxyP2SecureIT
   }
 
   @Before
-  public void startProxy()
-      throws Exception
-  {
+  public void startProxy() throws Exception {
     if (proxyServer == null) {
-      proxyServer = (ServletServer) this.lookup(ServletServer.ROLE, "secure");
+      proxyServer = this.lookup(ServletServer.class, "secure");
       proxyServer.start();
     }
   }

@@ -34,11 +34,6 @@ import org.sonatype.aether.util.version.GenericVersionScheme;
 import org.sonatype.aether.version.InvalidVersionSpecificationException;
 import org.sonatype.aether.version.Version;
 import org.sonatype.aether.version.VersionScheme;
-import org.sonatype.guice.bean.reflect.ClassSpace;
-import org.sonatype.guice.bean.reflect.URLClassSpace;
-import org.sonatype.guice.plexus.binders.PlexusXmlBeanModule;
-import org.sonatype.guice.plexus.config.PlexusBeanModule;
-import org.sonatype.inject.Parameters;
 import org.sonatype.nexus.events.Event;
 import org.sonatype.nexus.guice.AbstractInterceptorModule;
 import org.sonatype.nexus.guice.NexusAnnotatedBeanModule;
@@ -68,6 +63,11 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
+import org.eclipse.sisu.Parameters;
+import org.eclipse.sisu.plexus.PlexusBeanModule;
+import org.eclipse.sisu.plexus.PlexusXmlBeanModule;
+import org.eclipse.sisu.space.ClassSpace;
+import org.eclipse.sisu.space.URLClassSpace;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -208,10 +208,6 @@ public class DefaultNexusPluginManager
 
     // sad face here
     return null;
-  }
-
-  protected boolean isActivatedPlugin(final GAVCoordinate gav, final boolean strict) {
-    return getActivatedPluginGav(gav, strict) != null;
   }
 
   protected PluginManagerResponse activatePlugin(final GAVCoordinate gav, final boolean strict,
@@ -367,7 +363,7 @@ public class DefaultNexusPluginManager
     beanModules.add(new NexusAnnotatedBeanModule(annSpace, variables, repositoryTypes));
 
     // Find static resources and expose as single resource bundle
-    final List<StaticResource> staticResources = findStaticResources(pluginSpace);
+    final List<StaticResource> staticResources = findStaticResources(descriptor.getPluginCoordinates(), pluginSpace);
     final NexusResourceBundle resourceBundle = new NexusResourceBundle()
     {
       public List<StaticResource> getContributedResouces() {
@@ -399,13 +395,13 @@ public class DefaultNexusPluginManager
     descriptor.setStaticResources(staticResources);
   }
 
-  private List<StaticResource> findStaticResources(final ClassSpace pluginSpace) {
+  private List<StaticResource> findStaticResources(final GAVCoordinate gav, final ClassSpace pluginSpace) {
     final List<StaticResource> staticResources = new ArrayList<StaticResource>();
-    for (Enumeration<URL> e = pluginSpace.findEntries("static/", null, true); e.hasMoreElements();) {
+    for (Enumeration<URL> e = pluginSpace.findEntries("static/", null, true); e.hasMoreElements(); ) {
       final URL url = e.nextElement();
       final String path = getPublishedPath(url);
       if (path != null) {
-        staticResources.add(new PluginStaticResource(url, path,
+        staticResources.add(new PluginStaticResource(gav, url, path,
             mimeSupport.guessMimeTypeFromPath(url.getPath())));
       }
     }
@@ -414,7 +410,7 @@ public class DefaultNexusPluginManager
 
   private static List<String> findExportedClassnames(final ClassSpace annSpace) {
     final List<String> exportedClassNames = new ArrayList<String>();
-    for (Enumeration<URL> e = annSpace.findEntries(null, "*.class", true); e.hasMoreElements();) {
+    for (Enumeration<URL> e = annSpace.findEntries(null, "*.class", true); e.hasMoreElements(); ) {
       String path = e.nextElement().getPath();
       int index = path.lastIndexOf("jar!/");
       if (index > 0) {

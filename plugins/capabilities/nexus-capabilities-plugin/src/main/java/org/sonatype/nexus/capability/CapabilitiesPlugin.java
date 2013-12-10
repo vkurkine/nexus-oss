@@ -15,8 +15,9 @@ package org.sonatype.nexus.capability;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.sonatype.inject.EagerSingleton;
 import org.sonatype.nexus.plugin.PluginIdentity;
+
+import org.eclipse.sisu.EagerSingleton;
 
 /**
  * Capabilities plugin.
@@ -43,11 +44,6 @@ public class CapabilitiesPlugin
    * Expected artifactId for plugin artifact.
    */
   public static final String ARTIFACT_ID = "nexus-" + ID_PREFIX + "-plugin";
-
-  /**
-   * Prefix for @Named configuration.
-   */
-  public static final String CONFIG_PREFIX = "${" + ID_PREFIX;
 
   /**
    * Prefix for REST resources

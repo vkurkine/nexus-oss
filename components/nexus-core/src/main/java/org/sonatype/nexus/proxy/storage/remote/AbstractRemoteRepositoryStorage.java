@@ -26,9 +26,7 @@ import org.sonatype.nexus.proxy.item.RepositoryItemUid;
 import org.sonatype.nexus.proxy.repository.ProxyRepository;
 import org.sonatype.nexus.proxy.repository.Repository;
 import org.sonatype.nexus.proxy.storage.AbstractContextualizedRepositoryStorage;
-import org.sonatype.nexus.proxy.storage.StorageContext;
 import org.sonatype.nexus.proxy.utils.RepositoryStringUtils;
-import org.sonatype.nexus.proxy.utils.UserAgentBuilder;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -45,13 +43,9 @@ public abstract class AbstractRemoteRepositoryStorage
 
   private final ApplicationStatusSource applicationStatusSource;
 
-  private final UserAgentBuilder userAgentBuilder;
-
-  protected AbstractRemoteRepositoryStorage(final UserAgentBuilder userAgentBuilder,
-                                            final ApplicationStatusSource applicationStatusSource,
+  protected AbstractRemoteRepositoryStorage(final ApplicationStatusSource applicationStatusSource,
                                             final MimeSupport mimeSupport)
   {
-    this.userAgentBuilder = checkNotNull(userAgentBuilder);
     this.applicationStatusSource = checkNotNull(applicationStatusSource);
     this.mimeSupport = checkNotNull(mimeSupport);
   }
@@ -113,12 +107,12 @@ public abstract class AbstractRemoteRepositoryStorage
   {
     if (ContextOperation.INITIALIZE == contextOperation) {
       log.info("Initializing remote transport for proxy repository {}...",
-              RepositoryStringUtils.getHumanizedNameString(repository));
+          RepositoryStringUtils.getHumanizedNameString(repository));
 
     }
     else if (ContextOperation.UPDATE == contextOperation) {
       log.info("Updating remote transport for proxy repository {}...",
-              RepositoryStringUtils.getHumanizedNameString(repository));
+          RepositoryStringUtils.getHumanizedNameString(repository));
     }
     updateContext((ProxyRepository) repository, context);
   }
@@ -137,16 +131,6 @@ public abstract class AbstractRemoteRepositoryStorage
   }
 
   // helper methods
-
-  /**
-   * Returns the formatted UA to be used by sublass transport.
-   *
-   * @deprecated use {@link UserAgentBuilder} instead.
-   */
-  @Deprecated
-  protected String formatUserAgentString(RemoteStorageContext ctx, ProxyRepository repository) {
-    return userAgentBuilder.formatRemoteRepositoryStorageUserAgentString(repository, ctx);
-  }
 
   /**
    * Remote storage specific, when the remote connection settings are actually applied.

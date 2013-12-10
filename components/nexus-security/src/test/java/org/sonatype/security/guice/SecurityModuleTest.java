@@ -16,11 +16,6 @@ package org.sonatype.security.guice;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sonatype.guice.bean.binders.ParameterKeys;
-import org.sonatype.guice.bean.binders.SpaceModule;
-import org.sonatype.guice.bean.binders.WireModule;
-import org.sonatype.guice.bean.reflect.URLClassSpace;
-import org.sonatype.inject.BeanScanning;
 import org.sonatype.security.SecuritySystem;
 import org.sonatype.sisu.ehcache.CacheManagerComponent;
 import org.sonatype.sisu.litmus.testsupport.TestSupport;
@@ -29,12 +24,18 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import net.sf.ehcache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.nexus5727.FixedDefaultSessionManager;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
+import org.eclipse.sisu.space.BeanScanning;
+import org.eclipse.sisu.space.SpaceModule;
+import org.eclipse.sisu.space.URLClassSpace;
+import org.eclipse.sisu.wire.ParameterKeys;
+import org.eclipse.sisu.wire.WireModule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +87,7 @@ public class SecurityModuleTest
   @After
   public void stopCache() {
     if (injector != null) {
-      injector.getInstance(CacheManagerComponent.class).shutdown();
+      injector.getInstance(CacheManager.class).shutdown();
     }
   }
 

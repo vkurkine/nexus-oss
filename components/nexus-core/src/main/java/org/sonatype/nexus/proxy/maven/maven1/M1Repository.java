@@ -17,7 +17,6 @@ import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.sonatype.inject.Description;
 import org.sonatype.nexus.configuration.Configurator;
 import org.sonatype.nexus.configuration.model.CRepository;
 import org.sonatype.nexus.configuration.model.CRepositoryExternalConfigurationHolderFactory;
@@ -34,6 +33,7 @@ import org.sonatype.nexus.proxy.registry.ContentClass;
 import org.sonatype.nexus.proxy.repository.Repository;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.sisu.Description;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -67,7 +67,7 @@ public class M1Repository
 
   @Inject
   public M1Repository(final @Named(Maven1ContentClass.ID) ContentClass contentClass,
-                      final @Named("maven1") GavCalculator gavCalculator, 
+                      final @Named("maven1") GavCalculator gavCalculator,
                       final M1RepositoryConfigurator m1RepositoryConfigurator)
   {
     this.gavCalculator = checkNotNull(gavCalculator);
@@ -169,11 +169,6 @@ public class M1Repository
 
     // it is a release
     return isOld(getArtifactMaxAge(), item);
-  }
-
-  // not available on maven1 repo
-  public boolean recreateMavenMetadata(String path) {
-    return false;
   }
 
   @Override
