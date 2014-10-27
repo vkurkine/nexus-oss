@@ -14,9 +14,10 @@ package org.sonatype.nexus.component.source.api;
 
 import java.io.IOException;
 
-import javax.annotation.Nullable;
-
 import org.sonatype.nexus.component.model.Component;
+import org.sonatype.nexus.component.source.api.config.ComponentSourceConfig;
+import org.sonatype.nexus.component.source.api.config.ComponentSourceConfigId;
+import org.sonatype.nexus.component.source.api.config.ComponentSourceConfigStore;
 import org.sonatype.nexus.component.source.api.config.ComponentSourceFactory;
 
 /**
@@ -40,8 +41,20 @@ public interface PullComponentSource
    * storing some or all of the binary assets of the component.
    *
    * If no component(s) match the query, the returned {@link Iterable} is empty.
-   *
-   * TODO: How would this handle directory listings? Is a subdirectory a type of 'component'?
    */
   <T extends Component> Iterable<ComponentEnvelope<T>> fetchComponents(ComponentRequest<T> request) throws IOException;
+
+  /**
+   * True if the source will automatically block itself when there are connection difficulties with the remote source
+   * (e.g. misconfiguration, network hiccup, etc.)
+   *
+   * To turn autoblocking functionality on, change the source configuration via {@link
+   * ComponentSourceConfigStore#update(ComponentSourceConfigId, ComponentSourceConfig)}.
+   */
+  boolean isAutoBlockEnabled();
+
+  /**
+   * Returns {@code true} if the source has auto-blocked itself.
+   */
+  boolean isAutoBlocked();
 }

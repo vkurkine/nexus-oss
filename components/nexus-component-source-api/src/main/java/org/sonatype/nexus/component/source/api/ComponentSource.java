@@ -12,7 +12,9 @@
  */
 package org.sonatype.nexus.component.source.api;
 
-import org.sonatype.nexus.component.model.ComponentOriginId;
+import org.sonatype.nexus.component.source.api.config.ComponentSourceConfig;
+import org.sonatype.nexus.component.source.api.config.ComponentSourceConfigId;
+import org.sonatype.nexus.component.source.api.config.ComponentSourceConfigStore;
 
 /**
  * A remote source for components.
@@ -25,4 +27,8 @@ public interface ComponentSource
    * A cluster-wide unique name for this source.
    */
   ComponentSourceId getId();
+
+  boolean isEnabled();
+
+  void setEnabled(boolean enabled);
 }
