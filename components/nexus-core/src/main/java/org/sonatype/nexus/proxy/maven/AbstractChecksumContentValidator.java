@@ -88,7 +88,7 @@ public abstract class AbstractChecksumContentValidator
 
     if (remoteHash == null && ChecksumPolicy.STRICT.equals(checksumPolicy)) {
       msg = "The artifact " + item.getPath() + " has no remote checksum in repository " + item.getRepositoryId()
-              + "! The checksumPolicy of repository forbids downloading of it.";
+             + "! The checksumPolicy of repository forbids downloading of it.";
       if(sumLogEnabled) {
         sb.append(",cond=").append(1);
       }
@@ -108,11 +108,11 @@ public abstract class AbstractChecksumContentValidator
       if(sumLogEnabled) {
         sb.append(",rhi=").append(inspector).append(",lh=").append(localHash);
       }
-      if (remoteHash.getRemoteHash().equals(localHash)) { // PLYNCH: NPE here if retrieveLocalHash is null?
+      if (remoteHash.getRemoteHash().equals(localHash)) {
         // remote hash exists and matches item content
-        if(sumLogEnabled){
+        if(sumLogEnabled && sumLog.isTraceEnabled()){
           sb.append(",cond=").append(3);
-          sumLog.debug(sb.toString());
+          sumLog.trace(sb.toString()); // log trace when content is valid
         }
         return true;
       }
@@ -139,13 +139,16 @@ public abstract class AbstractChecksumContentValidator
     }
 
     if (!contentValid) {
-      if(sumLogEnabled) {
-        sb.append(",msg=").append(msg);
-      }
       log.debug("Validation failed due: " + msg);
     }
-    if(sumLogEnabled && sumLog.isTraceEnabled()) {
-      sumLog.trace(sb.toString());
+
+    if(sumLogEnabled){
+      if(contentValid && sumLog.isTraceEnabled()){
+        sumLog.trace(sb.toString());
+      } else if (!contentValid) {
+        sb.append(",msg=").append(msg);
+        sumLog.debug(sb.toString());
+      }
     }
 
     events.add(newChechsumFailureEvent(proxy, item, msg));
