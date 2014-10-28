@@ -144,10 +144,8 @@ public abstract class AbstractChecksumContentValidator
       }
       log.debug("Validation failed due: " + msg);
     }
-    if(sumLogEnabled) {
-      sumLog.debug(sb.toString());
-      // how to print the actual contents of the maven-metadata.xml here?
-
+    if(sumLogEnabled && sumLog.isTraceEnabled()) {
+      sumLog.trace(sb.toString());
     }
 
     events.add(newChechsumFailureEvent(proxy, item, msg));
