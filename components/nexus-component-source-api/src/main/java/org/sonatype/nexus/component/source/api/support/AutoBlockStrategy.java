@@ -1,5 +1,9 @@
 package org.sonatype.nexus.component.source.api.support;
 
+import javax.annotation.Nullable;
+
+import org.joda.time.DateTime;
+
 /**
  * A pluggable strategy for handling auto-blocking.
  *
@@ -15,7 +19,7 @@ public interface AutoBlockStrategy
   /**
    * Are we auto-blocked right now?
    */
-  boolean isAutoBlocked();
+  AutoBlockState getAutoBlockState();
 
   /**
    * Report that a successful call was made to the remote source.
@@ -26,4 +30,11 @@ public interface AutoBlockStrategy
    * Indicate that during a call to the remote source, an exception arose.
    */
   void processException(Exception e);
+
+  /**
+   * If the source is blocked, this will return the earliest DateTime at which the source will be checked for
+   * service to be restored.
+   */
+  @Nullable
+  DateTime getBlockedUntil();
 }

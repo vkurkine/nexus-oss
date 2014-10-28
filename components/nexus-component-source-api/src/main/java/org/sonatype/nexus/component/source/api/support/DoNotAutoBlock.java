@@ -1,13 +1,17 @@
 package org.sonatype.nexus.component.source.api.support;
 
+import javax.annotation.Nullable;
+
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
+import org.joda.time.DateTime;
+
 /**
- * Logs exceptions but never autoblocks.
+ * Logs exceptions but never auto-blocks.
  *
  * @since 3.0
  */
-public class DoNotAutoblock
+public class DoNotAutoBlock
     extends ComponentSupport
     implements AutoBlockStrategy
 {
@@ -17,8 +21,8 @@ public class DoNotAutoblock
   }
 
   @Override
-  public boolean isAutoBlocked() {
-    return false;
+  public AutoBlockState getAutoBlockState() {
+    return AutoBlockState.NOT_BLOCKED;
   }
 
   @Override
@@ -31,5 +35,11 @@ public class DoNotAutoblock
   @Override
   public void successfulCallMade() {
     // does nothing
+  }
+
+  @Nullable
+  @Override
+  public DateTime getBlockedUntil() {
+    return null;
   }
 }

@@ -1,6 +1,5 @@
 package org.sonatype.nexus.component.source.api.support;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -11,9 +10,9 @@ public class DoNotAutoblockTest
 {
   @Test
   public void testIsAutoBlockEnabled() throws Exception {
-    final AutoBlockStrategy autoblock = new DoNotAutoblock();
+    final AutoBlockStrategy autoblock = new DoNotAutoBlock();
 
-    assertThat(autoblock.isAutoBlocked(), is(equalTo(false)));
+    assertThat(autoblock.getAutoBlockState(),is(equalTo(AutoBlockState.NOT_BLOCKED)));
     assertThat(autoblock.isAutoBlockEnabled(), is(equalTo(false)));
   }
 

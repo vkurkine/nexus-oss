@@ -10,8 +10,6 @@ import org.joda.time.DateTime;
  *
  * @since 3.0
  */
-@Named("system")
-@Singleton
 public class SystemTimeSource
     implements TimeSource
 {

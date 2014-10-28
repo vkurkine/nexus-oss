@@ -1,6 +1,7 @@
 package org.sonatype.nexus.component.source.api.support;
 
 import org.sonatype.nexus.util.sequence.NumberSequence;
+import org.sonatype.nexus.util.time.SystemTimeSource;
 import org.sonatype.nexus.util.time.TimeSource;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
@@ -22,16 +23,15 @@ public class BlockOnException
 
   private final NumberSequence nextDelay;
 
-  private final TimeSource timeSource;
+  private  TimeSource timeSource = new SystemTimeSource();
 
   private DateTime blockedAtLeastUntil = null;
 
   private static final long ONE_MINUTE = 60L * 1000L; // 60 sec * 1000 msec
 
-  public BlockOnException(final String sourceName, final NumberSequence minutesToDelay, final TimeSource timeSource) {
+  public BlockOnException(final String sourceName, final NumberSequence minutesToDelay) {
     this.sourceName = checkNotNull(sourceName);
     this.nextDelay = checkNotNull(minutesToDelay);
-    this.timeSource = checkNotNull(timeSource);
   }
 
   @Override
@@ -40,8 +40,14 @@ public class BlockOnException
   }
 
   @Override
-  public synchronized boolean isAutoBlocked() {
-    return blockedAtLeastUntil != null;
+  public AutoBlockState getAutoBlockState() {
+    if(blockedAtLeastUntil==null){
+      return AutoBlockState.NOT_BLOCKED;
+    }
+    else if(blockedAtLeastUntil.isAfter(timeSource.currentTime())){
+      return AutoBlockState.AUTOBLOCKED;
+    }
+    return AutoBlockState.AUTOBLOCKED_STALE;
   }
 
   @Override
@@ -55,7 +61,9 @@ public class BlockOnException
 
   @Override
   public synchronized void processException(final Exception e) {
-    if (!isAutoBlocked()) {
+
+    if(getAutoBlockState().isRequestingAllowed()) {
+    //if (!isAutoBlocked()) {
       log.info("Source {} is auto-blocking due to {} communicating with remote source.", sourceName,
           e.getClass().getSimpleName(), e);
       setNextUnblockCheckTime();
@@ -72,8 +80,13 @@ public class BlockOnException
     setNextUnblockCheckTime();
   }
 
-  DateTime getBlockedAtLeastUntil() {
+  @Override
+  public DateTime getBlockedUntil() {
     return blockedAtLeastUntil;
+  }
+
+  void setTimeSource(final TimeSource timeSource) {
+    this.timeSource = timeSource;
   }
 
   private void setNextUnblockCheckTime() {

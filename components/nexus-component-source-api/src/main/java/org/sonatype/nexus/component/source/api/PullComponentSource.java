@@ -15,9 +15,6 @@ package org.sonatype.nexus.component.source.api;
 import java.io.IOException;
 
 import org.sonatype.nexus.component.model.Component;
-import org.sonatype.nexus.component.source.api.config.ComponentSourceConfig;
-import org.sonatype.nexus.component.source.api.config.ComponentSourceConfigId;
-import org.sonatype.nexus.component.source.api.config.ComponentSourceConfigStore;
 import org.sonatype.nexus.component.source.api.config.ComponentSourceFactory;
 
 /**
@@ -31,7 +28,7 @@ import org.sonatype.nexus.component.source.api.config.ComponentSourceFactory;
  * @since 3.0
  */
 public interface PullComponentSource
-    extends ComponentSource
+    extends ComponentSource, ConnectionStatus
 {
   /**
    * Query the source for matching components.
@@ -43,18 +40,4 @@ public interface PullComponentSource
    * If no component(s) match the query, the returned {@link Iterable} is empty.
    */
   <T extends Component> Iterable<ComponentEnvelope<T>> fetchComponents(ComponentRequest<T> request) throws IOException;
-
-  /**
-   * True if the source will automatically block itself when there are connection difficulties with the remote source
-   * (e.g. misconfiguration, network hiccup, etc.)
-   *
-   * To turn autoblocking functionality on, change the source configuration via {@link
-   * ComponentSourceConfigStore#update(ComponentSourceConfigId, ComponentSourceConfig)}.
-   */
-  boolean isAutoBlockEnabled();
-
-  /**
-   * Returns {@code true} if the source has auto-blocked itself.
-   */
-  boolean isAutoBlocked();
 }

@@ -2,6 +2,8 @@ package org.sonatype.nexus.component.source.api.support;
 
 import java.io.IOException;
 
+import javax.annotation.Nullable;
+
 import org.sonatype.nexus.component.model.Component;
 import org.sonatype.nexus.component.source.api.ComponentEnvelope;
 import org.sonatype.nexus.component.source.api.ComponentRequest;
@@ -10,10 +12,13 @@ import org.sonatype.nexus.component.source.api.PullComponentSource;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * A support base class for implementing {@link PullComponentSource}.
+ *
  * @since 3.0
  */
 public abstract class PullComponentSourceSupport
@@ -55,11 +60,20 @@ public abstract class PullComponentSourceSupport
   public final <T extends Component> Iterable<ComponentEnvelope<T>> fetchComponents(final ComponentRequest<T> request)
       throws IOException
   {
-    if (isAutoBlocked()) {
+    if (!enabled) {
+      log.info("Request made to disabled source {}.", id);
       return Lists.newArrayList();
     }
+
+    if (!getAutoBlockState().isRequestingAllowed()) {
+      log.info("Request made to auto-blocked source {}.", id);
+      return Lists.newArrayList();
+    }
+
     try {
-      return doFetchComponents(request);
+      final Iterable<ComponentEnvelope<T>> result = doFetchComponents(request);
+      autoBlockStrategy.successfulCallMade();
+      return result;
     }
     catch (Exception e) {
       autoBlockStrategy.processException(e);
@@ -71,12 +85,18 @@ public abstract class PullComponentSourceSupport
       final ComponentRequest<T> request) throws Exception;
 
   @Override
-  public boolean isAutoBlocked() {
-    return autoBlockStrategy.isAutoBlocked();
+  public AutoBlockState getAutoBlockState() {
+    return autoBlockStrategy.getAutoBlockState();
   }
 
   @Override
   public boolean isAutoBlockEnabled() {
     return autoBlockStrategy.isAutoBlockEnabled();
+  }
+
+  @Nullable
+  @Override
+  public DateTime getBlockedUntil() {
+    return autoBlockStrategy.getBlockedUntil();
   }
 }
