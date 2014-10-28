@@ -84,17 +84,36 @@ public class ChecksumContentValidator
   protected void cleanup(ProxyRepository proxy, RemoteHashResponse remoteHash, boolean contentValid)
       throws LocalStorageException
   {
+
     if (!contentValid && remoteHash != null && remoteHash.getHashItem() != null) {
       // TODO should we remove bad checksum if policy==WARN?
+      String path;
+      try{
+        path = remoteHash.getHashItem().getRepositoryItemUid().getPath();
+      } catch (Exception e){
+        if(sumLog.isDebugEnabled()){
+          sumLog.debug("problem getting path", e.getMessage()); //NPE uid?
+        }
+        throw e;
+      }
+      final boolean logStuff = sumLog.isDebugEnabled() && (path.endsWith("maven-metadata.xml") || path.endsWith("maven-metadata.xml.sha1") || path.endsWith("maven-metadata.xml.md5"));
       try {
-        String path = remoteHash.getHashItem().getRepositoryItemUid().getPath();
         proxy.getLocalStorage().deleteItem(proxy, new ResourceStoreRequest(path, true));
+        if(logStuff){
+          sumLog.debug("clean {} for {}", path, remoteHash.getRemoteHash());
+        }
       }
       catch (ItemNotFoundException e) {
         // ignore
+        if(logStuff){
+          sumLog.debug("clean failed {} for {}", path, remoteHash.getRemoteHash(), e.getMessage());
+        }
       }
       catch (UnsupportedStorageOperationException e) {
         // huh?
+        if(logStuff) {
+          sumLog.debug("clean failed {} for {}", path, remoteHash.getRemoteHash());
+        }
       }
     }
   }
@@ -185,49 +204,94 @@ public class ChecksumContentValidator
                                                            String noattrname)
       throws ItemNotFoundException, LocalStorageException
   {
+    final StringBuilder sb = new StringBuilder();
+
     final RepositoryItemUid itemUid = artifact.getRepositoryItemUid();
+    final String path = itemUid.getPath();
+    final boolean sumLogEnabled = isSumLogEnabled(itemUid.getPath());
+    if(sumLogEnabled){
+      sb.append("doRetrieveChecksumItem: ");
+      sb.append(path);
+    }
     itemUid.getLock().lock(Action.read);
     try {
       final Attributes attributes = artifact.getRepositoryItemAttributes();
 
       if (attributes == null) {
+        if(sumLogEnabled) {
+          sb.append(",attr=null");
+          sumLog.debug(sb.toString());
+        }
         throw new LocalStorageException("Null item repository attributes");
       }
 
       if (Boolean.parseBoolean(attributes.get(noattrname)) && !request.isRequestAsExpired()) {
+        if(sumLogEnabled){
+          sb.append(",not_expired=true");
+          sumLog.debug(sb.toString());
+        }
         throw new ItemNotFoundException(request);
       }
 
       String hash = attributes.get(attrname);
+      if(sumLogEnabled) {
+        sb.append(",lh=").append(hash);
+      }
       if (hash == null || request.isRequestAsExpired()) {
         try {
           final StorageFileItem remoteItem =
               (StorageFileItem) proxy.getRemoteStorage().retrieveItem(proxy, request, proxy.getRemoteUrl());
           hash = MUtils.readDigestFromFileItem(remoteItem); // closes http input stream
+          if(sumLogEnabled) {
+            sb.append(",rh=").append(hash);
+          }
         }
         catch (ItemNotFoundException e) {
+          if(sumLogEnabled){
+            sb.append(",x1=").append(e.getMessage());
+            //sumLog.debug(sb.toString());
+          }
           // fall through
         }
         catch (RemoteAccessException e) {
+          if(sumLogEnabled){
+            sb.append(",x2=").append(e.getMessage());
+            //sumLog.debug(sb.toString());
+          }
           // fall through
         }
         catch (RemoteStorageException e) {
+          if(sumLogEnabled){
+            sb.append(",x3=").append(e.getMessage());
+            //sumLog.debug(sb.toString());
+          }
           // this is (potentially) transient network or remote server problem will be cached
           // there is no automatic retry for this hash time
           // either expire the artifact or request the hash asExpired to retry
         }
-
         doStoreChechsumItem(proxy, artifact, attrname, noattrname, hash);
       }
 
       if (hash != null) {
+        if(sumLogEnabled){
+          sumLog.debug(sb.toString());
+        }
         return new RemoteHashResponse(inspector, hash, newHashItem(proxy, request, artifact, hash));
       }
       else {
+        if(sumLogEnabled){
+          sb.append(",x=INFE");
+          sumLog.debug(sb.toString());
+        }
         throw new ItemNotFoundException(request);
       }
     }
     catch (IOException e) {
+      if(sumLogEnabled){
+        sb.append(",x=LSE").append(e.getMessage());
+        sumLog.debug(sb.toString());
+      }
+
       throw new LocalStorageException(e);
     }
     finally {
@@ -264,13 +328,20 @@ public class ChecksumContentValidator
       throws IOException
   {
     final RepositoryItemUid itemUid = artifact.getRepositoryItemUid();
+    final boolean sumLogEnabled = isSumLogEnabled(itemUid.getPath());
     itemUid.getLock().lock(Action.update);
     final Attributes attributes = artifact.getRepositoryItemAttributes();
     try {
       if (hash != null) {
+        if(sumLogEnabled){
+          sumLog.debug("store {}={}", attrname, hash);
+        }
         attributes.put(attrname, hash);
       }
       else {
+        if(sumLogEnabled){
+          sumLog.debug("store {}={}", noattrname, true);
+        }
         attributes.put(noattrname, Boolean.toString(true));
       }
       proxy.getAttributesHandler().storeAttributes(artifact);
