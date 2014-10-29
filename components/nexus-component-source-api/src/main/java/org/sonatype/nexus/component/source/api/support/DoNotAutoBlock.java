@@ -19,7 +19,7 @@ import org.sonatype.sisu.goodies.common.ComponentSupport;
 import org.joda.time.DateTime;
 
 /**
- * Logs exceptions but never auto-blocks.
+ * Logs exceptions but never auto-blocks, to be used for sources that should never auto-block.
  *
  * @since 3.0
  */
@@ -38,14 +38,14 @@ public class DoNotAutoBlock
   }
 
   @Override
-  public void processException(final Exception e) {
+  public void handleConnectionFailure(final Exception e) {
     log.error("Error detected during communication with component source.", e);
 
     // Nothing else to do, since we never autoblock.
   }
 
   @Override
-  public void successfulCallMade() {
+  public void handleConnectionSuccess() {
     // does nothing
   }
 

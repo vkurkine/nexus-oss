@@ -29,7 +29,7 @@ import org.joda.time.DateTime;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A support base class for implementing {@link PullComponentSource}.
+ * A base class for implementing {@link PullComponentSource}s, providing enabling/disabling and autoblocking support.
  *
  * @since 3.0
  */
@@ -60,12 +60,7 @@ public abstract class PullComponentSourceSupport
 
   @Override
   public void setEnabled(final boolean enabled) {
-    boolean statusChanging = this.enabled != enabled;
     this.enabled = enabled;
-
-    if (statusChanging) {
-      // TODO: Dispatch an event?
-    }
   }
 
   @Override
@@ -84,11 +79,11 @@ public abstract class PullComponentSourceSupport
 
     try {
       final Iterable<ComponentEnvelope<T>> result = doFetchComponents(request);
-      autoBlockStrategy.successfulCallMade();
+      autoBlockStrategy.handleConnectionSuccess();
       return result;
     }
     catch (Exception e) {
-      autoBlockStrategy.processException(e);
+      autoBlockStrategy.handleConnectionFailure(e);
       return Lists.newArrayList();
     }
   }

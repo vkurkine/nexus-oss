@@ -15,7 +15,8 @@ package org.sonatype.nexus.util.time;
 import org.joda.time.DateTime;
 
 /**
- * An interface for obtaining the current time,
+ * An interface for obtaining the current time, used only so that time-dependent code can have its clock dependency
+ * injected for unit-test purposes.
  *
  * @since 3.0
  */

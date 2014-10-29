@@ -75,6 +75,9 @@ public class RawBinaryComponentSource
     return asList(ComponentEnvelope.simpleEnvelope((T) new RawComponent(), new RequestClosingAsset(response)));
   }
 
+  /**
+   * Test the connection by hitting the proxy's root, and downloading everything.
+   */
   @Override
   public void testConnection() throws IOException {
     final ComponentRequest<RawComponent> request = new ComponentRequest<RawComponent>(ImmutableMap.of("path", "."));

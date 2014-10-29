@@ -28,7 +28,13 @@ public interface ComponentSource
    */
   ComponentSourceId getId();
 
+  /**
+   * Is the source enabled or has it been manually disabled?
+   */
   boolean isEnabled();
 
+  /**
+   * Manually enable or disable the source.
+   */
   void setEnabled(boolean enabled);
 }

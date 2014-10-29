@@ -18,6 +18,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * Test the (very simple) {@link DoNotAutoBlock} strategy.
+ */
 public class DoNotAutoblockTest
 {
   @Test

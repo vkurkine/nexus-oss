@@ -13,6 +13,8 @@
 package org.sonatype.nexus.component.source.api.support;
 
 /**
+ * Indicates the autoblocking-related connection state of a component source.
+ *
  * @since 3.0
  */
 public enum AutoBlockState
@@ -33,16 +35,16 @@ public enum AutoBlockState
    */
   AUTOBLOCKED_STALE(true);
 
-  private final boolean canQuery;
+  private final boolean requestsAllowed;
 
-  private AutoBlockState(final boolean canQuery) {
-    this.canQuery = canQuery;
+  private AutoBlockState(final boolean requestsAllowed) {
+    this.requestsAllowed = requestsAllowed;
   }
 
   /**
    * Is it okay to send requests to this source?
    */
   public boolean isRequestingAllowed() {
-    return canQuery;
+    return requestsAllowed;
   }
 }

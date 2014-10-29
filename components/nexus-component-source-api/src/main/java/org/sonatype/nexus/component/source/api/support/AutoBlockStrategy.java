@@ -34,18 +34,20 @@ public interface AutoBlockStrategy
   AutoBlockState getAutoBlockState();
 
   /**
-   * Report that a successful call was made to the remote source.
+   * Report that a successful call was made to the remote source, whether during normal operation or a connection test.
    */
-  void successfulCallMade();
+  void handleConnectionSuccess();
 
   /**
    * Indicate that during a call to the remote source, an exception arose.
    */
-  void processException(Exception e);
+  void handleConnectionFailure(Exception e);
 
   /**
-   * If the source is blocked, this will return the earliest DateTime at which the source will be checked for
-   * service to be restored.
+   * If the source is blocked, this will return the earliest DateTime at which the source should be checked for
+   * service to be restored, {@code null} otherwise. This is the date at which {@link #getAutoBlockState()} transitions
+   * to {@link AutoBlockState#AUTOBLOCKED_STALE}, at least until {@link #handleConnectionSuccess()} or {@link
+   * #handleConnectionFailure(Exception)} is called.
    */
   @Nullable
   DateTime getBlockedUntil();

@@ -20,7 +20,6 @@ import org.sonatype.nexus.component.model.Component;
 import org.sonatype.nexus.component.source.api.ComponentEnvelope;
 import org.sonatype.nexus.component.source.api.ComponentRequest;
 import org.sonatype.nexus.component.source.api.ComponentSourceId;
-import org.sonatype.nexus.component.source.api.ComponentSourceRegistry;
 import org.sonatype.nexus.component.source.api.PullComponentSource;
 import org.sonatype.nexus.component.source.api.support.AutoBlockState;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
@@ -31,7 +30,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A {@link PullComponentSource} wrapper which can be disabled by the registry.
+ * A {@link PullComponentSource} wrapper which can be disabled by the registry, to prevent out-of-date source instances
+ * from being held by handlers indefinitely.
  *
  * @since 3.0
  */
@@ -45,8 +45,7 @@ public class ComponentSourceSleeve
 
   private final ComponentSourceId sourceId;
 
-  public ComponentSourceSleeve(final PullComponentSource source)
-  {
+  public ComponentSourceSleeve(final PullComponentSource source) {
     this.source = checkNotNull(source);
     this.sourceId = checkNotNull(source.getId());
   }
@@ -64,48 +63,48 @@ public class ComponentSourceSleeve
   public <T extends Component> Iterable<ComponentEnvelope<T>> fetchComponents(final ComponentRequest<T> request)
       throws IOException
   {
-    checkNotStale();
+    checkNotDisabled();
     return source.fetchComponents(request);
   }
 
   @Override
   public boolean isEnabled() {
-    checkNotStale();
+    checkNotDisabled();
     return source.isEnabled();
   }
 
   @Override
   public void setEnabled(final boolean enabled) {
-    checkNotStale();
+    checkNotDisabled();
     source.setEnabled(enabled);
   }
 
   @Override
   public boolean isAutoBlockEnabled() {
-    checkNotStale();
+    checkNotDisabled();
     return source.isAutoBlockEnabled();
   }
 
   @Override
   public AutoBlockState getAutoBlockState() {
-    checkNotStale();
+    checkNotDisabled();
     return source.getAutoBlockState();
   }
 
   @Nullable
   @Override
   public DateTime getBlockedUntil() {
-    checkNotStale();
+    checkNotDisabled();
     return source.getBlockedUntil();
   }
 
   @Override
   public void testConnection() throws IOException {
-    checkNotStale();
+    checkNotDisabled();
     source.testConnection();
   }
 
-  private void checkNotStale() {
+  private void checkNotDisabled() {
     checkState(!disabled, "Disabled instance of component source %s used.", sourceId);
   }
 }

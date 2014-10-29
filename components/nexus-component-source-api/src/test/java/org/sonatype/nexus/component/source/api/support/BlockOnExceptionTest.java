@@ -22,6 +22,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * Test the BlockOnException auto-block strategy.
+ */
 public class BlockOnExceptionTest
 {
   private static final String SOURCE_NAME = "testSource";
@@ -39,7 +42,7 @@ public class BlockOnExceptionTest
 
     assertThat(strategy.getAutoBlockState(), is(equalTo(AutoBlockState.NOT_BLOCKED)));
 
-    strategy.processException(new RuntimeException("pretend exception"));
+    strategy.handleConnectionFailure(new RuntimeException("pretend exception"));
 
     assertThat(strategy.getAutoBlockState(), is(equalTo(AutoBlockState.AUTOBLOCKED)));
   }
@@ -48,9 +51,9 @@ public class BlockOnExceptionTest
   public void unblocksWhenToldTo() {
     final BlockOnException strategy = new BlockOnException(SOURCE_NAME, fibonacci(1, 1));
 
-    strategy.processException(new RuntimeException("pretend exception"));
+    strategy.handleConnectionFailure(new RuntimeException("pretend exception"));
 
-    strategy.successfulCallMade();
+    strategy.handleConnectionSuccess();
 
     assertThat(strategy.getAutoBlockState(), is(equalTo(AutoBlockState.NOT_BLOCKED)));
   }
@@ -61,7 +64,7 @@ public class BlockOnExceptionTest
     final StubTimeSource timeSource = new StubTimeSource();
     strategy.setTimeSource(timeSource);
 
-    strategy.processException(new RuntimeException("pretend exception"));
+    strategy.handleConnectionFailure(new RuntimeException("pretend exception"));
 
     assertThat(strategy.getAutoBlockState(), is(equalTo(AutoBlockState.AUTOBLOCKED)));
 
@@ -81,20 +84,19 @@ public class BlockOnExceptionTest
         fibonacci(delayOne, delayTwo));
     strategy.setTimeSource(stubTimeSource);
 
-    strategy.processException(new RuntimeException());
+    strategy.handleConnectionFailure(new RuntimeException());
 
-    // We should be okay to check again after a 14-minute delay
-    final DateTime firstCheckTime = new DateTime(0).plusMinutes(delayOne);
+    // Expect to be blocked until the first delay elapses
+    final DateTime blockedUntil = new DateTime(0).plusMinutes(delayOne);
+    assertThat(strategy.getBlockedUntil(), is(equalTo(blockedUntil)));
 
-    assertThat(strategy.getBlockedUntil(), is(equalTo(firstCheckTime)));
-
-    // Before that time, additional exceptions do nothing
-    strategy.processException(new RuntimeException());
-    assertThat(strategy.getBlockedUntil(), is(equalTo(firstCheckTime)));
+    // Before then, additional exceptions don't cause additional delays.
+    strategy.handleConnectionFailure(new RuntimeException());
+    assertThat(strategy.getBlockedUntil(), is(equalTo(blockedUntil)));
 
     // Once that time has passed, however, new exceptions will increment the time
     stubTimeSource.plusMinutes(delayOne + 1);
-    strategy.processException(new RuntimeException());
+    strategy.handleConnectionFailure(new RuntimeException());
 
     // We should be okay to check again after ANOTHER 14-minute delay
     final DateTime secondCheckTime = new DateTime(0).plusMinutes(delayOne + delayTwo);

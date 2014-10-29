@@ -12,11 +12,11 @@
  */
 package org.sonatype.nexus.component.source.internal;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.component.source.api.ComponentSource;
@@ -41,16 +41,16 @@ public class InMemorySourceRegistry
 {
   private final ConcurrentHashMap<ComponentSourceId, ComponentSource> sources = new ConcurrentHashMap<>();
 
-  public synchronized void register(final ComponentSource source) {
+  public void register(final ComponentSource source) {
     checkNotNull(source);
 
-    final ComponentSource wrap = wrap(source);
+    final ComponentSource sleeve = applySleeve(source);
 
-    final ComponentSource alreadyBound = sources.putIfAbsent(wrap.getId(), wrap);
+    final ComponentSource alreadyBound = sources.putIfAbsent(sleeve.getId(), sleeve);
 
-    checkState(alreadyBound == null, "A source is already bound to name %s", wrap.getId());
+    checkState(alreadyBound == null, "A source is already bound to name %s", sleeve.getId());
 
-    log.info("Registering component source {}", wrap);
+    log.info("Registering component source {}", sleeve);
   }
 
   public boolean unregister(ComponentSource source) {
@@ -69,14 +69,14 @@ public class InMemorySourceRegistry
     return removed != null;
   }
 
+  public void update(ComponentSource source) {
+    unregister(source);
+    register(source);
+  }
+
   @Override
   public <T extends ComponentSource> T getSource(String name) {
-    for (Map.Entry<ComponentSourceId, ComponentSource> entry : sources.entrySet()) {
-      if (entry.getKey().getName().equals(name)) {
-        return (T) entry.getValue();
-      }
-    }
-    return null;
+    return getSource(getIdByName(name));
   }
 
   @Nullable
@@ -85,7 +85,38 @@ public class InMemorySourceRegistry
     return (T) this.sources.get(sourceId);
   }
 
-  private ComponentSource wrap(ComponentSource source) {
+  @Override
+  public <T extends ComponentSource> Provider<T> getSourceProvider(final ComponentSourceId sourceId) {
+    checkState(InMemorySourceRegistry.this.getSource(sourceId) != null,
+        "Cannot obtain source Provider - source %s not found.", sourceId);
+    return new Provider<T>()
+    {
+      @Override
+      public T get() {
+        final T source = InMemorySourceRegistry.this.getSource(sourceId);
+        checkState(source != null, "Attempt to access missing component source %s.", sourceId);
+        return source;
+      }
+    };
+  }
+
+  @Override
+  public <T extends ComponentSource> Provider<T> getSourceProvider(final String sourceName) {
+    final ComponentSourceId id = getIdByName(checkNotNull(sourceName));
+    checkNotNull(id, "No source found for name %s.", sourceName);
+    return getSourceProvider(id);
+  }
+
+  private ComponentSourceId getIdByName(String sourceName) {
+    for (ComponentSourceId id : sources.keySet()) {
+      if (id.getName().equals(sourceName)) {
+        return id;
+      }
+    }
+    return null;
+  }
+
+  private ComponentSource applySleeve(ComponentSource source) {
     if (source instanceof PullComponentSource) {
       return new ComponentSourceSleeve((PullComponentSource) source);
     }

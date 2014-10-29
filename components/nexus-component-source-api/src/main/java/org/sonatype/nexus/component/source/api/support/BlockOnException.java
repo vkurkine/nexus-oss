@@ -35,11 +35,9 @@ public class BlockOnException
 
   private final NumberSequence nextDelay;
 
-  private  TimeSource timeSource = new SystemTimeSource();
+  private TimeSource timeSource = new SystemTimeSource();
 
   private DateTime blockedAtLeastUntil = null;
-
-  private static final long ONE_MINUTE = 60L * 1000L; // 60 sec * 1000 msec
 
   public BlockOnException(final String sourceName, final NumberSequence minutesToDelay) {
     this.sourceName = checkNotNull(sourceName);
@@ -53,17 +51,17 @@ public class BlockOnException
 
   @Override
   public AutoBlockState getAutoBlockState() {
-    if(blockedAtLeastUntil==null){
+    if (blockedAtLeastUntil == null) {
       return AutoBlockState.NOT_BLOCKED;
     }
-    else if(blockedAtLeastUntil.isAfter(timeSource.currentTime())){
+    else if (blockedAtLeastUntil.isAfter(timeSource.currentTime())) {
       return AutoBlockState.AUTOBLOCKED;
     }
     return AutoBlockState.AUTOBLOCKED_STALE;
   }
 
   @Override
-  public synchronized void successfulCallMade() {
+  public synchronized void handleConnectionSuccess() {
     if (blockedAtLeastUntil != null) {
       log.info("Source {} is unblocking after a successful connection.", sourceName);
     }
@@ -72,17 +70,13 @@ public class BlockOnException
   }
 
   @Override
-  public synchronized void processException(final Exception e) {
-
-    if(getAutoBlockState().isRequestingAllowed()) {
-    //if (!isAutoBlocked()) {
+  public synchronized void handleConnectionFailure(final Exception e) {
+    if (getAutoBlockState().isRequestingAllowed()) {
       log.info("Source {} is auto-blocking due to {} communicating with remote source.", sourceName,
           e.getClass().getSimpleName(), e);
       setNextUnblockCheckTime();
       return;
     }
-
-    // We're blocked
 
     if (timeSource.currentTime().isBefore(blockedAtLeastUntil)) {
       // It's too soon to check whether this source should unblock, so ignore the exception
@@ -97,6 +91,9 @@ public class BlockOnException
     return blockedAtLeastUntil;
   }
 
+  /**
+   * An overridable time source for testing purposes.
+   */
   void setTimeSource(final TimeSource timeSource) {
     this.timeSource = timeSource;
   }
@@ -111,6 +108,6 @@ public class BlockOnException
       blockedAtLeastUntil = blockedAtLeastUntil.plusMinutes(increment);
     }
 
-    log.info("Source {} is auto-blocked until {}.", sourceName, blockedAtLeastUntil);
+    log.info("Source {} is now auto-blocked until {}.", sourceName, blockedAtLeastUntil);
   }
 }
