@@ -59,7 +59,7 @@ public class InMemorySourceRegistry
     final ComponentSource removed = sources.remove(source.getId());
 
     if (removed instanceof ComponentSourceSleeve) {
-      ((ComponentSourceSleeve) removed).disable();
+      ((ComponentSourceSleeve) removed).markExpired();
     }
 
     if (removed != null) {

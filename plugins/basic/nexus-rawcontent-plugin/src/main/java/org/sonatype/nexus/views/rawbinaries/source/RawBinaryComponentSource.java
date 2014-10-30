@@ -77,6 +77,7 @@ public class RawBinaryComponentSource
 
   /**
    * Test the connection by hitting the proxy's root, and downloading everything.
+   *
    */
   @Override
   public void testConnection() throws IOException {

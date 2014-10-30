@@ -39,7 +39,7 @@ public class ComponentSourceSleeve
     extends ComponentSupport
     implements PullComponentSource
 {
-  private boolean disabled = false;
+  private boolean expired = false;
 
   private final PullComponentSource source;
 
@@ -55,56 +55,56 @@ public class ComponentSourceSleeve
     return sourceId;
   }
 
-  public void disable() {
-    this.disabled = true;
+  public void markExpired() {
+    this.expired = true;
   }
 
   @Override
   public <T extends Component> Iterable<ComponentEnvelope<T>> fetchComponents(final ComponentRequest<T> request)
       throws IOException
   {
-    checkNotDisabled();
+    checkExpiry();
     return source.fetchComponents(request);
   }
 
   @Override
   public boolean isEnabled() {
-    checkNotDisabled();
+    checkExpiry();
     return source.isEnabled();
   }
 
   @Override
   public void setEnabled(final boolean enabled) {
-    checkNotDisabled();
+    checkExpiry();
     source.setEnabled(enabled);
   }
 
   @Override
   public boolean isAutoBlockEnabled() {
-    checkNotDisabled();
+    checkExpiry();
     return source.isAutoBlockEnabled();
   }
 
   @Override
   public AutoBlockState getAutoBlockState() {
-    checkNotDisabled();
+    checkExpiry();
     return source.getAutoBlockState();
   }
 
   @Nullable
   @Override
   public DateTime getBlockedUntil() {
-    checkNotDisabled();
+    checkExpiry();
     return source.getBlockedUntil();
   }
 
   @Override
   public void testConnection() throws IOException {
-    checkNotDisabled();
+    checkExpiry();
     source.testConnection();
   }
 
-  private void checkNotDisabled() {
-    checkState(!disabled, "Disabled instance of component source %s used.", sourceId);
+  private void checkExpiry() {
+    checkState(!expired, "Expired instance of component source %s used.", sourceId);
   }
 }
