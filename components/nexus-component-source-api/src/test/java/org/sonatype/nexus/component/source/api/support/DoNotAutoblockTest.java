@@ -25,10 +25,9 @@ public class DoNotAutoblockTest
 {
   @Test
   public void testIsAutoBlockEnabled() throws Exception {
-    final AutoBlockStrategy autoblock = new DoNotAutoBlock();
+    final AutoBlockStrategy autoblock = new DoNotAutoBlock("test");
 
-    assertThat(autoblock.getAutoBlockState(),is(equalTo(AutoBlockState.NOT_BLOCKED)));
-    assertThat(autoblock.isAutoBlockEnabled(), is(equalTo(false)));
+    assertThat(autoblock.getAutoBlockState(), is(equalTo(AutoBlockState.NEVER_BLOCKS)));
   }
 
 }

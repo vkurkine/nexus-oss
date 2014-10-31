@@ -45,11 +45,6 @@ public class BlockOnException
   }
 
   @Override
-  public boolean isAutoBlockEnabled() {
-    return true;
-  }
-
-  @Override
   public AutoBlockState getAutoBlockState() {
     if (blockedAtLeastUntil == null) {
       return AutoBlockState.NOT_BLOCKED;

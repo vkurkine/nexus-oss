@@ -31,15 +31,6 @@ import org.joda.time.DateTime;
 public interface ConnectionStatus
 {
   /**
-   * True if the source will automatically block itself when there are connection difficulties with the remote source
-   * (e.g. misconfiguration, network hiccup, etc.)
-   *
-   * To turn autoblocking functionality on, change the source configuration via {@link
-   * ComponentSourceConfigStore#update(ComponentSourceConfigId, ComponentSourceConfig)}.
-   */
-  boolean isAutoBlockEnabled();
-
-  /**
    * Returns the current state of auto-blocking.
    */
   AutoBlockState getAutoBlockState();

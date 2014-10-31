@@ -27,19 +27,20 @@ public class DoNotAutoBlock
     extends ComponentSupport
     implements AutoBlockStrategy
 {
-  @Override
-  public boolean isAutoBlockEnabled() {
-    return false;
+  private final String sourceName;
+
+  public DoNotAutoBlock(final String sourceName) {
+    this.sourceName = sourceName;
   }
 
   @Override
   public AutoBlockState getAutoBlockState() {
-    return AutoBlockState.NOT_BLOCKED;
+    return AutoBlockState.NEVER_BLOCKS;
   }
 
   @Override
   public void handleConnectionFailure(final Exception e) {
-    log.error("Error detected during communication with component source.", e);
+    log.error("Error detected during communication with component source %s.", sourceName, e);
 
     // Nothing else to do, since we never autoblock.
   }

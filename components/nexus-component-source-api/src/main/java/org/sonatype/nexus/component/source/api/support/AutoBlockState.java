@@ -20,6 +20,11 @@ package org.sonatype.nexus.component.source.api.support;
 public enum AutoBlockState
 {
   /**
+   * This component source isn't blocked, and will never auto-block.
+   */
+  NEVER_BLOCKS(true),
+
+  /**
    * The source is not auto-blocked.
    */
   NOT_BLOCKED(true),

@@ -30,13 +30,6 @@ public class BlockOnExceptionTest
   private static final String SOURCE_NAME = "testSource";
 
   @Test
-  public void reportsAutoBlockEnabled() {
-    final BlockOnException strategy = new BlockOnException(SOURCE_NAME, fibonacci(1, 1));
-
-    assertThat(strategy.isAutoBlockEnabled(), is(equalTo(true)));
-  }
-
-  @Test
   public void blocksOnException() {
     final BlockOnException strategy = new BlockOnException(SOURCE_NAME, fibonacci(1, 1));
 

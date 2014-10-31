@@ -80,12 +80,6 @@ public class ComponentSourceSleeve
   }
 
   @Override
-  public boolean isAutoBlockEnabled() {
-    checkExpiry();
-    return source.isAutoBlockEnabled();
-  }
-
-  @Override
   public AutoBlockState getAutoBlockState() {
     checkExpiry();
     return source.getAutoBlockState();

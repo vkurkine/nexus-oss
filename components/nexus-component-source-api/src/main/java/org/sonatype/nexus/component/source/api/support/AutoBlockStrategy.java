@@ -24,11 +24,6 @@ import org.joda.time.DateTime;
 public interface AutoBlockStrategy
 {
   /**
-   * Does this strategy auto-block sometimes?
-   */
-  boolean isAutoBlockEnabled();
-
-  /**
    * Are we auto-blocked right now?
    */
   AutoBlockState getAutoBlockState();

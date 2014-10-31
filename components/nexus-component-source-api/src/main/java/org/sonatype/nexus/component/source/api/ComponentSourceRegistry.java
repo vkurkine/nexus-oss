@@ -27,7 +27,7 @@ public interface ComponentSourceRegistry
    * should not be retained, as instances may be disposed of (and disabled) if the source configuration changes.
    */
   @Nullable
-  public <T extends ComponentSource> T getSource(String name);
+  <T extends ComponentSource> T getSource(String name);
 
   /**
    * Return a {@link ComponentSource} for the given name, or {@code null} if none is registered. References to sources

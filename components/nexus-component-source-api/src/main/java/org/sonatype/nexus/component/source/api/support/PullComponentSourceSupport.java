@@ -96,11 +96,6 @@ public abstract class PullComponentSourceSupport
     return autoBlockStrategy.getAutoBlockState();
   }
 
-  @Override
-  public boolean isAutoBlockEnabled() {
-    return autoBlockStrategy.isAutoBlockEnabled();
-  }
-
   @Nullable
   @Override
   public DateTime getBlockedUntil() {
