@@ -14,6 +14,7 @@ package org.sonatype.nexus.component.source.api.support;
 
 import org.sonatype.nexus.util.sequence.FibonacciNumberSequence;
 import org.sonatype.nexus.util.time.TimeSource;
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.is;
  * Test the BlockOnException auto-block strategy.
  */
 public class BlockOnExceptionTest
+    extends TestSupport
 {
   private static final String SOURCE_NAME = "testSource";
 

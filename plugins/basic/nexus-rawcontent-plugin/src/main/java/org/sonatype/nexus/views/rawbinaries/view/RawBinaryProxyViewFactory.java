@@ -14,11 +14,9 @@ package org.sonatype.nexus.views.rawbinaries.view;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.component.source.api.ComponentSourceRegistry;
-import org.sonatype.nexus.component.source.api.PullComponentSource;
 import org.sonatype.nexus.componentviews.AllRequestMatcher;
 import org.sonatype.nexus.componentviews.NotFoundHandler;
 import org.sonatype.nexus.componentviews.Router;
@@ -50,13 +48,16 @@ public class RawBinaryProxyViewFactory
 
   private final ComponentSourceRegistry sourceRegistry;
 
+  private final String sourceName;
+
   @Inject
   public RawBinaryProxyViewFactory(final RawBinaryStore binaryStore, final NotFoundHandler notFoundHandler,
-                                   final ComponentSourceRegistry sourceRegistry)
+                                   final ComponentSourceRegistry sourceRegistry, final String sourceName)
   {
     this.binaryStore = checkNotNull(binaryStore);
     this.notFoundHandler = checkNotNull(notFoundHandler);
     this.sourceRegistry = checkNotNull(sourceRegistry);
+    this.sourceName = checkNotNull(sourceName);
   }
 
   @Override
@@ -75,12 +76,10 @@ public class RawBinaryProxyViewFactory
 
     checkNotNull(sourceName, "Source name cannot be null for proxy config");
 
-    final Provider<PullComponentSource> sourceProvider = sourceRegistry.getSourceProvider(sourceName);
-
-    final ProxyingRawBinariesHandler proxyingWrapper = new ProxyingRawBinariesHandler(binaryStore, sourceProvider);
+    final ProxyingRawBinariesHandler proxy = new ProxyingRawBinariesHandler(binaryStore, sourceName, sourceRegistry);
     final HostedRawBinariesHandler hosted = new HostedRawBinariesHandler(binaryStore);
 
-    router.addRoute(binariesRequestMatcher, asList(proxyingWrapper, hosted));
+    router.addRoute(binariesRequestMatcher, asList(proxy, hosted));
 
     return new View(config, router, notFoundHandler);
   }

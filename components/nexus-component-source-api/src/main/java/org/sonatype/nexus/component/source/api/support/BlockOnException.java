@@ -17,6 +17,7 @@ import org.sonatype.nexus.util.time.SystemTimeSource;
 import org.sonatype.nexus.util.time.TimeSource;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.joda.time.DateTime;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -86,9 +87,7 @@ public class BlockOnException
     return blockedAtLeastUntil;
   }
 
-  /**
-   * An overridable time source for testing purposes.
-   */
+  @VisibleForTesting
   void setTimeSource(final TimeSource timeSource) {
     this.timeSource = timeSource;
   }

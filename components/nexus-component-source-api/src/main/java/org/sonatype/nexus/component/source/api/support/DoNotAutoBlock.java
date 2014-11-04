@@ -40,7 +40,7 @@ public class DoNotAutoBlock
 
   @Override
   public void handleConnectionFailure(final Exception e) {
-    log.error("Error detected during communication with component source %s.", sourceName, e);
+    log.error("Error detected during communication with component source {}.", sourceName, e);
 
     // Nothing else to do, since we never autoblock.
   }

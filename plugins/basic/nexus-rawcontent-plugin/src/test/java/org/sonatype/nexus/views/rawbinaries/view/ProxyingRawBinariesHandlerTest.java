@@ -14,11 +14,10 @@ package org.sonatype.nexus.views.rawbinaries.view;
 
 import java.util.Collections;
 
-import javax.inject.Provider;
-
 import org.sonatype.nexus.component.model.Asset;
 import org.sonatype.nexus.component.source.api.ComponentEnvelope;
 import org.sonatype.nexus.component.source.api.ComponentRequest;
+import org.sonatype.nexus.component.source.api.ComponentSourceRegistry;
 import org.sonatype.nexus.component.source.api.PullComponentSource;
 import org.sonatype.nexus.componentviews.HandlerContext;
 import org.sonatype.nexus.componentviews.ViewRequest;
@@ -43,7 +42,6 @@ import static org.mockito.Mockito.when;
 
 public class ProxyingRawBinariesHandlerTest
 {
-
   private TestableRawProxyHandler handler;
 
   private RawBinaryStore store;
@@ -52,18 +50,17 @@ public class ProxyingRawBinariesHandlerTest
 
   private static final String PATH = "/path/foo";
 
+  private static final String SOURCE_NAME = "test_source";
+
   @Before
   public void initMocks() {
     store = mock(RawBinaryStore.class);
     source = mock(PullComponentSource.class);
 
-    handler = new TestableRawProxyHandler(store, new Provider<PullComponentSource>()
-    {
-      @Override
-      public PullComponentSource get() {
-        return source;
-      }
-    });
+    final ComponentSourceRegistry sourceRegistry = mock(ComponentSourceRegistry.class);
+    when(sourceRegistry.getSource(SOURCE_NAME)).thenReturn(source);
+
+    handler = new TestableRawProxyHandler(store, SOURCE_NAME, sourceRegistry);
   }
 
   @Test
@@ -103,7 +100,7 @@ public class ProxyingRawBinariesHandlerTest
     final ComponentRequest fetchRequest = new ComponentRequest(fetchParameters);
     when(source.fetchComponents(eq(fetchRequest))).thenReturn(fetchedComponents);
 
-    final ViewResponse handle = handler.handle(context);
+    handler.handle(context);
 
     verify(source).fetchComponents(eq(fetchRequest));
   }
@@ -120,10 +117,10 @@ public class ProxyingRawBinariesHandlerTest
   {
     private RawBinary streamed;
 
-    private TestableRawProxyHandler(final RawBinaryStore binaryStore,
-                                    final Provider<PullComponentSource> sourceProvider)
+    private TestableRawProxyHandler(final RawBinaryStore binaryStore, final String sourceName,
+                                    final ComponentSourceRegistry sourceRegistry)
     {
-      super(binaryStore, sourceProvider);
+      super(binaryStore, sourceName, sourceRegistry);
     }
 
     @Override

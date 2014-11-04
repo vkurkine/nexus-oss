@@ -12,6 +12,8 @@
  */
 package org.sonatype.nexus.component.source.api.support;
 
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
+
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,6 +24,7 @@ import static org.hamcrest.Matchers.is;
  * Test the (very simple) {@link DoNotAutoBlock} strategy.
  */
 public class DoNotAutoblockTest
+    extends TestSupport
 {
   @Test
   public void testIsAutoBlockEnabled() throws Exception {

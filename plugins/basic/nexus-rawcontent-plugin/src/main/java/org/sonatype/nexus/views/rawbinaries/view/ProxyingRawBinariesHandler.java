@@ -21,6 +21,8 @@ import javax.inject.Provider;
 import org.sonatype.nexus.component.model.Asset;
 import org.sonatype.nexus.component.source.api.ComponentEnvelope;
 import org.sonatype.nexus.component.source.api.ComponentRequest;
+import org.sonatype.nexus.component.source.api.ComponentSource;
+import org.sonatype.nexus.component.source.api.ComponentSourceRegistry;
 import org.sonatype.nexus.component.source.api.PullComponentSource;
 import org.sonatype.nexus.componentviews.Handler;
 import org.sonatype.nexus.componentviews.HandlerContext;
@@ -47,12 +49,15 @@ public class ProxyingRawBinariesHandler
 {
   private final RawBinaryStore binaryStore;
 
-  private final Provider<PullComponentSource> sourceProvider;
+  private final String sourceName;
 
-  public ProxyingRawBinariesHandler(final RawBinaryStore binaryStore,
-                                    final Provider<PullComponentSource> sourceProvider)
+  private final ComponentSourceRegistry sourceRegistry;
+
+  public ProxyingRawBinariesHandler(final RawBinaryStore binaryStore, final String sourceName,
+                                    final ComponentSourceRegistry sourceRegistry)
   {
-    this.sourceProvider = sourceProvider;
+    this.sourceName = sourceName;
+    this.sourceRegistry = sourceRegistry;
     this.binaryStore = checkNotNull(binaryStore);
   }
 
@@ -82,8 +87,10 @@ public class ProxyingRawBinariesHandler
         try {
           final ComponentRequest path = new ComponentRequest(ImmutableMap.of("path", requestPath));
 
+          final PullComponentSource source = sourceRegistry.getSource(sourceName);
+
           // Here we presume we're getting Component back, since we don't actually use the component metadata
-          final Iterable<ComponentEnvelope<RawComponent>> envelopes = sourceProvider.get().fetchComponents(path);
+          final Iterable<ComponentEnvelope<RawComponent>> envelopes = source.fetchComponents(path);
 
           for (ComponentEnvelope<RawComponent> envelope : envelopes) {
             for (Asset asset : envelope.getAssets()) {
