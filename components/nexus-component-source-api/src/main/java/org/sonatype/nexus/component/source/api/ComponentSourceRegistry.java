@@ -21,15 +21,17 @@ public interface ComponentSourceRegistry
 {
   /**
    * Return a {@link ComponentSource} for the given name. References to sources should not be retained, as instances
-   * may  be disposed of (and disabled) if the source configuration changes.
+   * may be disposed of (and disabled) if the source configuration changes.
    *
    * @throws IllegalArgumentException if there is no source by that name.
    */
   <T extends ComponentSource> T getSource(String name);
 
   /**
-   * Return a {@link ComponentSource} for the given name, or {@code null} if none is registered. References to sources
-   * should not be retained, as instances may be disposed of (and disabled) if the source configuration changes.
+   * Return a {@link ComponentSource} for the given id. References to sources should not be retained, as instances
+   * may be disposed of (and disabled) if the source configuration changes.
+   *
+   * @throws IllegalArgumentException if there is no source by that name.
    */
   <T extends ComponentSource> T getSource(ComponentSourceId sourceId);
 }

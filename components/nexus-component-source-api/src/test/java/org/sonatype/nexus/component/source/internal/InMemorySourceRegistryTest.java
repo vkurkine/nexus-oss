@@ -14,6 +14,7 @@ package org.sonatype.nexus.component.source.internal;
 
 import java.io.IOException;
 
+import org.sonatype.nexus.component.source.api.ComponentSource;
 import org.sonatype.nexus.component.source.api.ComponentSourceId;
 import org.sonatype.nexus.component.source.api.PullComponentSource;
 
@@ -37,20 +38,24 @@ public class InMemorySourceRegistryTest
     registry = new InMemorySourceRegistry();
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void sourceNotFoundThrowsException() {
+    registry.getSource("not found");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void sourceNotFoundByIdThrowsException() {
+    registry.getSource(sourceId);
+  }
+
   @Test
-  public void additionAndRemoval() {
-    final PullComponentSource mock = mock(PullComponentSource.class);
-    when(mock.getId()).thenReturn(sourceId);
+  public void findByName() {
+    final ComponentSource source = mock(PullComponentSource.class);
+    when(source.getId()).thenReturn(sourceId);
 
-    assertThat(registry.getSource(sourceId), is(equalTo(null)));
+    registry.register(source);
 
-    registry.register(mock);
-
-    assertThat(registry.getSource(sourceId).getId(), is(equalTo(sourceId)));
-
-    registry.unregister(mock);
-
-    assertThat(registry.getSource(sourceId), is(equalTo(null)));
+    assertThat(registry.getSource(sourceId.getName()), is(equalTo(source)));
   }
 
   @Test
@@ -65,20 +70,6 @@ public class InMemorySourceRegistryTest
     // Calling methods on a registered source should work
 
     final PullComponentSource source = registry.getSource(sourceId);
-    source.testConnection();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void callingTestConnectionFailsAfterUnregistration() throws IOException {
-    final PullComponentSource mock = mock(PullComponentSource.class);
-    when(mock.getId()).thenReturn(sourceId);
-
-    assertThat(registry.getSource(sourceId), is(equalTo(null)));
-
-    registry.register(mock);
-    final PullComponentSource source = registry.getSource(sourceId);
-
-    registry.unregister(mock);
     source.testConnection();
   }
 }

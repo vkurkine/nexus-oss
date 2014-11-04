@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.component.source.api.ComponentSource;
@@ -24,6 +23,7 @@ import org.sonatype.nexus.component.source.api.ComponentSourceId;
 import org.sonatype.nexus.component.source.api.ComponentSourceRegistry;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -75,7 +75,9 @@ public class InMemorySourceRegistry
   @Nullable
   @Override
   public <T extends ComponentSource> T getSource(final ComponentSourceId sourceId) {
-    return (T) this.sources.get(sourceId);
+    final ComponentSource source = this.sources.get(sourceId);
+    checkArgument(source != null, "No source found for source ID %s", sourceId);
+    return (T) source;
   }
 
   private ComponentSourceId getIdByName(String sourceName) {
@@ -84,7 +86,7 @@ public class InMemorySourceRegistry
         return id;
       }
     }
-    return null;
+    throw new IllegalArgumentException(String.format("No source found for name %s", sourceName));
   }
 
 }
