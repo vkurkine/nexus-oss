@@ -10,26 +10,27 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.realms.privileges;
+package org.sonatype.nexus.repository.simple.internal;
 
-import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-import javax.annotation.Nullable;
+import org.sonatype.nexus.repository.Format;
+import org.sonatype.nexus.repository.security.RepositoryFormatPrivilegesSupport;
 
-import org.sonatype.configuration.validation.ValidationResponse;
-import org.sonatype.security.model.CPrivilege;
-import org.sonatype.security.realms.validator.SecurityValidationContext;
-
-public interface PrivilegeDescriptor
+/**
+ * Adds {@code simple} format {@code repository-format} privileges.
+ *
+ * @since 3.0
+ */
+@Named
+@Singleton
+public class SimpleFormatPrivileges
+  extends RepositoryFormatPrivilegesSupport
 {
-  String getType();
-
-  String getName();
-
-  List<PrivilegePropertyDescriptor> getPropertyDescriptors();
-
-  @Nullable
-  String buildPermission(CPrivilege privilege);
-
-  ValidationResponse validatePrivilege(CPrivilege privilege, SecurityValidationContext ctx, boolean update);
+  @Inject
+  public SimpleFormatPrivileges(final @Named(SimpleFormat.NAME) Format format) {
+    super(format);
+  }
 }

@@ -10,26 +10,25 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.realms.privileges;
 
-import java.util.List;
+package org.sonatype.nexus.repository.simple.internal;
 
-import javax.annotation.Nullable;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-import org.sonatype.configuration.validation.ValidationResponse;
-import org.sonatype.security.model.CPrivilege;
-import org.sonatype.security.realms.validator.SecurityValidationContext;
+import org.sonatype.nexus.repository.security.MutableDynamicSecurityResource;
 
-public interface PrivilegeDescriptor
+/**
+ * Container for {@code simple} format dynamic privileges.
+ *
+ * @since 3.0
+ *
+ * @see SimpleSecurityFacet
+ */
+@Named
+@Singleton
+public class SimpleDynamicPrivileges
+    extends MutableDynamicSecurityResource
 {
-  String getType();
-
-  String getName();
-
-  List<PrivilegePropertyDescriptor> getPropertyDescriptors();
-
-  @Nullable
-  String buildPermission(CPrivilege privilege);
-
-  ValidationResponse validatePrivilege(CPrivilege privilege, SecurityValidationContext ctx, boolean update);
+  // empty
 }
