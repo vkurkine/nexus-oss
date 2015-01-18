@@ -20,8 +20,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.security.usermanagement.AbstractReadOnlyUserManager;
-import org.sonatype.security.usermanagement.User;
 import org.sonatype.security.usermanagement.RoleIdentifier;
+import org.sonatype.security.usermanagement.User;
 import org.sonatype.security.usermanagement.UserManager;
 import org.sonatype.security.usermanagement.UserNotFoundException;
 import org.sonatype.security.usermanagement.UserSearchCriteria;

@@ -27,8 +27,8 @@ import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeD
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeMethodPropertyDescriptor;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegePermissionPropertyDescriptor;
 import org.sonatype.security.realms.tools.DefaultConfigurationManager;
-import org.sonatype.security.usermanagement.User;
 import org.sonatype.security.usermanagement.RoleIdentifier;
+import org.sonatype.security.usermanagement.User;
 import org.sonatype.security.usermanagement.UserSearchCriteria;
 import org.sonatype.security.usermanagement.UserStatus;
 
