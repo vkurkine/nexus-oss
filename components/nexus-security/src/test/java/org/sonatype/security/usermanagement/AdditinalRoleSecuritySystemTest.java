@@ -196,6 +196,11 @@ public class AdditinalRoleSecuritySystemTest
     criteria.setSource(source);
     Set<User> users = securitySystem.searchUsers(criteria);
 
+    System.out.println("Found users:");
+    for (User user : users) {
+      System.out.format("%s, source=%s%n", user, user.getSource());
+    }
+
     Map<String, User> userMap = toUserMap(users);
     Assert.assertTrue("More then 1 User was returned: " + userMap.keySet(), users.size() <= 1);
 

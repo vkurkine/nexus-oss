@@ -21,10 +21,8 @@ import javax.inject.Singleton;
 @Named("MockUserManagerA")
 public class MockUserManagerA
     extends AbstractMockUserManager
-
 {
   public MockUserManagerA() {
-
     User a = new User();
     a.setName("Joe Coder");
     a.setEmailAddress("jcoder@sonatype.org");
@@ -75,5 +73,4 @@ public class MockUserManagerA
   public String getAuthenticationRealmName() {
     return "MockRealmA";
   }
-
 }
