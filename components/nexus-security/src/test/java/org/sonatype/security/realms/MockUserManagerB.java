@@ -10,11 +10,17 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.usermanagement;
+package org.sonatype.security.realms;
 
 import javax.enterprise.inject.Typed;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import org.sonatype.security.usermanagement.AbstractMockUserManager;
+import org.sonatype.security.usermanagement.RoleIdentifier;
+import org.sonatype.security.usermanagement.User;
+import org.sonatype.security.usermanagement.UserManager;
+import org.sonatype.security.usermanagement.UserStatus;
 
 @Singleton
 @Typed(UserManager.class)

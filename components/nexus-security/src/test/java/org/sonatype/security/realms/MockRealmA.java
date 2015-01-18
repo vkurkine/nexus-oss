@@ -33,7 +33,6 @@ import org.apache.shiro.realm.Realm;
 public class MockRealmA
     extends AuthenticatingRealm
 {
-
   @Inject
   public MockRealmA(@Named("MockUserManagerA") UserManager userManager) {
     this.setAuthenticationTokenClass(UsernamePasswordToken.class);
@@ -43,13 +42,11 @@ public class MockRealmA
   protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
       throws AuthenticationException
   {
-
     // only allow jcoder/jcoder
 
     UsernamePasswordToken userpass = (UsernamePasswordToken) token;
     if ("jcoder".equals(userpass.getUsername()) && "jcoder".equals(new String(userpass.getPassword()))) {
-      return new SimpleAuthenticationInfo(userpass.getUsername(), new String(userpass.getPassword()),
-          this.getName());
+      return new SimpleAuthenticationInfo(userpass.getUsername(), new String(userpass.getPassword()), this.getName());
     }
 
     return null;
@@ -59,5 +56,4 @@ public class MockRealmA
   public String getName() {
     return "MockRealmA";
   }
-
 }
