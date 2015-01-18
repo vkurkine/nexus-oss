@@ -25,32 +25,28 @@ import org.sonatype.security.realms.tools.ConfigurationManager;
 
 import junit.framework.Assert;
 
+/**
+ * Tests for {@link AuthorizationManager}.
+ */
 public class AuthorizationManagerTest
     extends AbstractSecurityTestCase
 {
-
   @Override
   protected Configuration getSecurityModelConfig() {
     return AuthorizationManagerTestSecurity.securityModel();
   }
 
-  public AuthorizationManager getAuthorizationManager()
-      throws Exception
-  {
+  public AuthorizationManager getAuthorizationManager() throws Exception {
     return this.lookup(AuthorizationManager.class);
   }
 
-  public ConfigurationManager getConfigurationManager()
-      throws Exception
-  {
+  public ConfigurationManager getConfigurationManager() throws Exception {
     return lookup(ConfigurationManager.class);
   }
 
   // ROLES
 
-  public void testListRoles()
-      throws Exception
-  {
+  public void testListRoles() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
     Set<Role> roles = authzManager.listRoles();
 
@@ -70,9 +66,7 @@ public class AuthorizationManagerTest
     Assert.assertEquals(2, role3.getPrivileges().size());
   }
 
-  public void testGetRole()
-      throws Exception
-  {
+  public void testGetRole() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
 
     Role role1 = authzManager.getRole("role1");
@@ -85,10 +79,7 @@ public class AuthorizationManagerTest
     Assert.assertEquals(2, role1.getPrivileges().size());
   }
 
-  public void testAddRole()
-      throws Exception
-  {
-
+  public void testAddRole() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
 
     Role role = new Role();
@@ -108,12 +99,9 @@ public class AuthorizationManagerTest
     Assert.assertTrue(secRole.getPrivileges().contains("2"));
     Assert.assertTrue(secRole.getPrivileges().contains("4"));
     Assert.assertEquals(2, secRole.getPrivileges().size());
-
   }
 
-  public void testUpdateRole()
-      throws Exception
-  {
+  public void testUpdateRole() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
 
     Role role2 = authzManager.getRole("role2");
@@ -135,9 +123,7 @@ public class AuthorizationManagerTest
     Assert.assertEquals(1, secRole.getPrivileges().size());
   }
 
-  public void testDeleteRole()
-      throws Exception
-  {
+  public void testDeleteRole() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
     try {
       authzManager.deleteRole("INVALID-ROLENAME");
@@ -174,7 +160,6 @@ public class AuthorizationManagerTest
     catch (NoSuchRoleException e) {
       // expected
     }
-
   }
 
   private Map<String, Role> toRoleMap(Set<Role> roles) {
@@ -189,9 +174,7 @@ public class AuthorizationManagerTest
 
   // Privileges
 
-  public void testListPrivileges()
-      throws Exception
-  {
+  public void testListPrivileges() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
     Set<Privilege> privileges = authzManager.listPrivileges();
 
@@ -212,9 +195,7 @@ public class AuthorizationManagerTest
     Assert.assertEquals("/some/path/", priv3.getPrivilegeProperty("permission"));
   }
 
-  public void testGetPrivilege()
-      throws Exception
-  {
+  public void testGetPrivilege() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
 
     Privilege priv3 = authzManager.getPrivilege("3");
@@ -227,9 +208,7 @@ public class AuthorizationManagerTest
     Assert.assertEquals("/some/path/", priv3.getPrivilegeProperty("permission"));
   }
 
-  public void testAddPrivilege()
-      throws Exception
-  {
+  public void testAddPrivilege() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
 
     Privilege privilege = new Privilege();
@@ -253,12 +232,9 @@ public class AuthorizationManagerTest
 
     Assert.assertEquals("bar2", secPriv.getProperty("foo1"));
     Assert.assertEquals("foo2", secPriv.getProperty("bar1"));
-
   }
 
-  public void testUpdatePrivilege()
-      throws Exception
-  {
+  public void testUpdatePrivilege() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
 
     Privilege priv2 = authzManager.getPrivilege("2");
@@ -278,9 +254,7 @@ public class AuthorizationManagerTest
     Assert.assertEquals(2, secPriv.getProperties().size());
   }
 
-  public void testDeleteUser()
-      throws Exception
-  {
+  public void testDeleteUser() throws Exception {
     AuthorizationManager authzManager = this.getAuthorizationManager();
     try {
       authzManager.deletePrivilege("INVALID-PRIVILEGENAME");
@@ -317,7 +291,6 @@ public class AuthorizationManagerTest
     catch (NoSuchPrivilegeException e) {
       // expected
     }
-
   }
 
   private Map<String, Privilege> toPrivilegeMap(Set<Privilege> privileges) {
@@ -329,5 +302,4 @@ public class AuthorizationManagerTest
 
     return roleMap;
   }
-
 }

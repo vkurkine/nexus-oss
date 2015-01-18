@@ -23,17 +23,13 @@ public class DefaultPrivilegeInheritanceManagerTest
 
   private DefaultPrivilegeInheritanceManager manager;
 
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
 
     manager = (DefaultPrivilegeInheritanceManager) this.lookup(PrivilegeInheritanceManager.class);
   }
 
-  public void testCreateInherit()
-      throws Exception
-  {
+  public void testCreateInherit() throws Exception {
     List<String> methods = manager.getInheritedMethods("create");
 
     assertTrue(methods.size() == 2);
@@ -41,18 +37,14 @@ public class DefaultPrivilegeInheritanceManagerTest
     assertTrue(methods.contains("create"));
   }
 
-  public void testReadInherit()
-      throws Exception
-  {
+  public void testReadInherit() throws Exception {
     List<String> methods = manager.getInheritedMethods("read");
 
     assertTrue(methods.size() == 1);
     assertTrue(methods.contains("read"));
   }
 
-  public void testUpdateInherit()
-      throws Exception
-  {
+  public void testUpdateInherit() throws Exception {
     List<String> methods = manager.getInheritedMethods("update");
 
     assertTrue(methods.size() == 2);
@@ -60,9 +52,7 @@ public class DefaultPrivilegeInheritanceManagerTest
     assertTrue(methods.contains("update"));
   }
 
-  public void testDeleteInherit()
-      throws Exception
-  {
+  public void testDeleteInherit() throws Exception {
     List<String> methods = manager.getInheritedMethods("delete");
 
     assertTrue(methods.size() == 2);
