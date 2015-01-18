@@ -25,21 +25,29 @@ import org.sonatype.security.usermanagement.UserSearchCriteria;
 
 import junit.framework.Assert;
 
+// FIXME: resolve with other UserManagerTest (in org.sonatype.security.usermanagement)
+
+/**
+ * Tests for {@link UserManager}.
+ */
 public class UserManagerTest
     extends AbstractSecurityTestCase
 {
+  private UserManager underTest;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    underTest = getUserManager();
+  }
 
   @Override
   protected Configuration getSecurityModelConfig() {
     return UserManagerTestSecurity.securityModel();
   }
 
-  public void testListUserIds()
-      throws Exception
-  {
-    UserManager userLocator = this.getUserManager();
-
-    Set<String> userIds = userLocator.listUserIds();
+  public void testListUserIds() throws Exception {
+    Set<String> userIds = underTest.listUserIds();
     Assert.assertTrue(userIds.contains("test-user"));
     Assert.assertTrue(userIds.contains("anonymous"));
     Assert.assertTrue(userIds.contains("admin"));
@@ -47,12 +55,8 @@ public class UserManagerTest
     Assert.assertEquals(4, userIds.size());
   }
 
-  public void testListUsers()
-      throws Exception
-  {
-    UserManager userLocator = this.getUserManager();
-
-    Set<User> users = userLocator.listUsers();
+  public void testListUsers() throws Exception {
+    Set<User> users = underTest.listUsers();
     Map<String, User> userMap = this.toUserMap(users);
 
     Assert.assertTrue(userMap.containsKey("test-user"));
@@ -62,11 +66,8 @@ public class UserManagerTest
     Assert.assertEquals(4, users.size());
   }
 
-  public void testGetUser()
-      throws Exception
-  {
-    UserManager userLocator = this.getUserManager();
-    User testUser = userLocator.getUser("test-user");
+  public void testGetUser() throws Exception {
+    User testUser = underTest.getUser("test-user");
 
     Assert.assertEquals("Test User", testUser.getName());
     Assert.assertEquals("test-user", testUser.getUserId());
@@ -80,11 +81,8 @@ public class UserManagerTest
     Assert.assertEquals(2, roleMap.size());
   }
 
-  public void testGetUserWithEmptyRole()
-      throws Exception
-  {
-    UserManager userLocator = this.getUserManager();
-    User testUser = userLocator.getUser("test-user-with-empty-role");
+  public void testGetUserWithEmptyRole() throws Exception {
+    User testUser = underTest.getUser("test-user-with-empty-role");
 
     Assert.assertEquals("Test User With Empty Role", testUser.getName());
     Assert.assertEquals("test-user-with-empty-role", testUser.getUserId());
@@ -99,12 +97,8 @@ public class UserManagerTest
     Assert.assertEquals(3, roleMap.size());
   }
 
-  public void testSearchUser()
-      throws Exception
-  {
-    UserManager userLocator = this.getUserManager();
-
-    Set<User> users = userLocator.searchUsers(new UserSearchCriteria("test"));
+  public void testSearchUser() throws Exception {
+    Set<User> users = underTest.searchUsers(new UserSearchCriteria("test"));
     Map<String, User> userMap = this.toUserMap(users);
 
     Assert.assertTrue(userMap.containsKey("test-user"));
@@ -130,5 +124,4 @@ public class UserManagerTest
     }
     return results;
   }
-
 }

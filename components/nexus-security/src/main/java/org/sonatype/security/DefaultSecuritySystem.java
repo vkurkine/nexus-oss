@@ -52,6 +52,7 @@ import org.sonatype.security.usermanagement.UserSearchCriteria;
 import org.sonatype.security.usermanagement.UserStatus;
 import org.sonatype.sisu.goodies.eventbus.EventBus;
 
+import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 import net.sf.ehcache.CacheManager;
 import org.apache.shiro.SecurityUtils;
@@ -456,42 +457,42 @@ public class DefaultSecuritySystem
     eventBus.post(new AuthorizationConfigurationChanged());
   }
 
-  public User getUser(String userId)
-      throws UserNotFoundException
-  {
-    List<UserManager> orderedUserManagers = this.orderUserManagers();
-    for (UserManager userManager : orderedUserManagers) {
-      try {
-        return this.getUser(userId, userManager.getSource());
-      }
-      catch (UserNotFoundException e) {
-        this.logger.debug("User: '" + userId + "' was not found in: '" + userManager.getSource() + "' ");
-      }
-      catch (NoSuchUserManagerException e) {
-        // we should NEVER bet here
-        this.logger.warn("UserManager: '" + userManager.getSource()
-            + "' was not found, but is in the list of UserManagers", e);
-      }
-    }
-    throw new UserNotFoundException(userId);
-  }
+  private User findUser(String userId, UserManager userManager) throws UserNotFoundException {
+    logger.trace("Finding user: {} in user-manager: {}", userId, userManager);
 
-  public User getUser(String userId, String source)
-      throws UserNotFoundException, NoSuchUserManagerException
-  {
-    // first get the user
-    // this is the UserManager that owns the user
-    UserManager userManager = getUserManager(source);
     User user = userManager.getUser(userId);
-
     if (user == null) {
       throw new UserNotFoundException(userId);
     }
+    logger.trace("Found user: {}", user);
 
     // add roles from other user managers
     this.addOtherRolesToUser(user);
 
     return user;
+  }
+
+  public User getUser(String userId) throws UserNotFoundException {
+    logger.trace("Finding user: {}", userId);
+
+    for (UserManager userManager : orderUserManagers()) {
+      try {
+        return findUser(userId, userManager);
+      }
+      catch (UserNotFoundException e) {
+        logger.trace("User: '{}' was not found in: '{}'", userId, userManager, e);
+      }
+    }
+
+    logger.trace("User not found: {}", userId);
+    throw new UserNotFoundException(userId);
+  }
+
+  public User getUser(String userId, String source) throws UserNotFoundException, NoSuchUserManagerException {
+    logger.trace("Finding user: {} in source: {}", userId, source);
+
+    UserManager userManager = getUserManager(source);
+    return findUser(userId, userManager);
   }
 
   public Set<User> listUsers() {
@@ -849,7 +850,9 @@ public class DefaultSecuritySystem
   }
 
   private void setSecurityManagerRealms() {
-    getSecurityManager().setRealms(new ArrayList<Realm>(this.getRealmsFromConfigSource()));
+    Collection<Realm> realms = getRealmsFromConfigSource();
+    logger.debug("Security manager realms: {}", realms);
+    getSecurityManager().setRealms(Lists.newArrayList(realms));
   }
 
   /**

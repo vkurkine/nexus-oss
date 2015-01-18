@@ -15,6 +15,7 @@ package org.sonatype.security;
 import org.sonatype.security.configuration.source.PreconfiguredSecurityConfigurationSource;
 import org.sonatype.security.configuration.source.SecurityConfigurationSource;
 import org.sonatype.security.guice.SecurityModule;
+import org.sonatype.sisu.litmus.testsupport.TestUtil;
 
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
@@ -23,6 +24,7 @@ import org.eclipse.sisu.launch.InjectedTestCase;
 public abstract class SecurityTestSupport
     extends InjectedTestCase
 {
+  protected final TestUtil util = new TestUtil(this);
 
   @Override
   public void configure(final Binder binder) {

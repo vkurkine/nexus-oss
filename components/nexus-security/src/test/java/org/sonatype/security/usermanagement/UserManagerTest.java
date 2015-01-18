@@ -32,6 +32,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
+// FIXME: resolve with other UserManagerTest (in org.sonatype.security.locators)
+
 public class UserManagerTest
     extends AbstractSecurityTestCase
 {

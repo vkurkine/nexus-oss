@@ -15,17 +15,12 @@ package org.sonatype.security.locators;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.sonatype.security.usermanagement.User;
-import org.sonatype.security.usermanagement.UserManager;
 import org.sonatype.security.usermanagement.UserStatus;
 
-@Singleton
-@Typed(UserManager.class)
-@Named("MockUserManagerB")
+//@Singleton
+//@Typed(UserManager.class)
+//@Named("MockUserManagerB")
 public class MockUserManagerB
     extends AbstractTestUserManager
 {

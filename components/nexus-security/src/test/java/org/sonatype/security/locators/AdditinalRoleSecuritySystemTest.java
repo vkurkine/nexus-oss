@@ -31,16 +31,22 @@ import junit.framework.Assert;
 public class AdditinalRoleSecuritySystemTest
     extends AbstractSecurityTestCase
 {
+  private SecuritySystem securitySystem;
+
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+
+    securitySystem = getSecuritySystem();
+  }
 
   @Override
   protected Configuration getSecurityModelConfig() {
     return AdditinalRoleSecuritySystemTestSecurity.securityModel();
   }
 
-  private Set<String> getRoles()
-      throws Exception
-  {
-    AuthorizationManager authzManager = this.lookup(AuthorizationManager.class);
+  private Set<String> getRoles() throws Exception {
+    AuthorizationManager authzManager = lookup(AuthorizationManager.class);
 
     Set<String> roles = new HashSet<String>();
     for (Role role : authzManager.listRoles()) {
@@ -50,33 +56,30 @@ public class AdditinalRoleSecuritySystemTest
     return roles;
   }
 
-  public void testListUsers()
-      throws Exception
-  {
-    SecuritySystem userManager = this.getSecuritySystem();
+  public void testListUsers() throws Exception {
     UserSearchCriteria criteria = new UserSearchCriteria(null, null, "MockUserManagerA");
-    Set<User> users = userManager.searchUsers(criteria);
+    Set<User> users = securitySystem.searchUsers(criteria);
 
-    Map<String, User> userMap = this.toUserMap(users);
+    Map<String, User> userMap = toUserMap(users);
 
     User user = userMap.get("jcoder");
     Assert.assertNotNull(user);
 
     // A,B,C,1
-    Set<String> roleIds = this.toRoleIdSet(user.getRoles());
+    Set<String> roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("RoleA"));
     Assert.assertTrue(roleIds.contains("RoleB"));
     Assert.assertTrue(roleIds.contains("RoleC"));
-    Assert.assertTrue("roles: " + this.toRoleIdSet(user.getRoles()), roleIds.contains("Role1"));
+    Assert.assertTrue("roles: " + toRoleIdSet(user.getRoles()), roleIds.contains("Role1"));
 
-    Assert.assertEquals("roles: " + this.toRoleIdSet(user.getRoles()), 4, user.getRoles().size());
+    Assert.assertEquals("roles: " + toRoleIdSet(user.getRoles()), 4, user.getRoles().size());
 
     user = userMap.get("dknudsen");
     Assert.assertNotNull(user);
     Assert.assertEquals(1, user.getRoles().size());
 
     // Role2
-    roleIds = this.toRoleIdSet(user.getRoles());
+    roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("Role2"));
 
     user = userMap.get("cdugas");
@@ -84,7 +87,7 @@ public class AdditinalRoleSecuritySystemTest
     Assert.assertEquals(3, user.getRoles().size());
 
     // A,B,1
-    roleIds = this.toRoleIdSet(user.getRoles());
+    roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("RoleA"));
     Assert.assertTrue(roleIds.contains("RoleB"));
     Assert.assertTrue(roleIds.contains("Role1"));
@@ -92,14 +95,11 @@ public class AdditinalRoleSecuritySystemTest
     user = userMap.get("pperalez");
     Assert.assertNotNull(user);
     Assert.assertEquals(0, user.getRoles().size());
-
   }
 
-  public void testSearchEffectiveTrue()
-      throws Exception
-  {
+  public void testSearchEffectiveTrue() throws Exception {
     UserSearchCriteria criteria = new UserSearchCriteria();
-    criteria.setOneOfRoleIds(this.getRoles());
+    criteria.setOneOfRoleIds(getRoles());
 
     criteria.setUserId("pperalez");
     User user = searchForSingleUser(criteria, "pperalez", null);
@@ -108,9 +108,10 @@ public class AdditinalRoleSecuritySystemTest
     criteria.setUserId("jcoder");
     user = searchForSingleUser(criteria, "jcoder", null);
     Assert.assertNotNull(user);
-    Assert.assertEquals("Roles: " + this.toRoleIdSet(user.getRoles()), 4, user.getRoles().size());
+    Assert.assertEquals("Roles: " + toRoleIdSet(user.getRoles()), 4, user.getRoles().size());
+
     // A,B,C,1
-    Set<String> roleIds = this.toRoleIdSet(user.getRoles());
+    Set<String> roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("RoleA"));
     Assert.assertTrue(roleIds.contains("RoleB"));
     Assert.assertTrue(roleIds.contains("RoleC"));
@@ -120,8 +121,9 @@ public class AdditinalRoleSecuritySystemTest
     user = searchForSingleUser(criteria, "dknudsen", null);
     Assert.assertNotNull(user);
     Assert.assertEquals(1, user.getRoles().size());
+
     // Role2
-    roleIds = this.toRoleIdSet(user.getRoles());
+    roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("Role2"));
 
     criteria.setUserId("cdugas");
@@ -130,16 +132,13 @@ public class AdditinalRoleSecuritySystemTest
     Assert.assertEquals(3, user.getRoles().size());
 
     // A,B,1
-    roleIds = this.toRoleIdSet(user.getRoles());
+    roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("RoleA"));
     Assert.assertTrue(roleIds.contains("RoleB"));
     Assert.assertTrue(roleIds.contains("Role1"));
-
   }
 
-  public void testSearchEffectiveFalse()
-      throws Exception
-  {
+  public void testSearchEffectiveFalse() throws Exception {
     UserSearchCriteria criteria = new UserSearchCriteria();
 
     criteria.setUserId("pperalez");
@@ -150,8 +149,9 @@ public class AdditinalRoleSecuritySystemTest
     user = searchForSingleUser(criteria, "jcoder", "MockUserManagerA");
     Assert.assertNotNull(user);
     Assert.assertEquals(4, user.getRoles().size());
+
     // A,B,C,1
-    Set<String> roleIds = this.toRoleIdSet(user.getRoles());
+    Set<String> roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("RoleA"));
     Assert.assertTrue(roleIds.contains("RoleB"));
     Assert.assertTrue(roleIds.contains("RoleC"));
@@ -161,8 +161,9 @@ public class AdditinalRoleSecuritySystemTest
     user = searchForSingleUser(criteria, "dknudsen", "MockUserManagerA");
     Assert.assertNotNull(user);
     Assert.assertEquals(1, user.getRoles().size());
+
     // Role2
-    roleIds = this.toRoleIdSet(user.getRoles());
+    roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("Role2"));
 
     criteria.setUserId("cdugas");
@@ -171,23 +172,19 @@ public class AdditinalRoleSecuritySystemTest
     Assert.assertEquals(3, user.getRoles().size());
 
     // A,B,1
-    roleIds = this.toRoleIdSet(user.getRoles());
+    roleIds = toRoleIdSet(user.getRoles());
     Assert.assertTrue(roleIds.contains("RoleA"));
     Assert.assertTrue(roleIds.contains("RoleB"));
     Assert.assertTrue(roleIds.contains("Role1"));
-
   }
 
-  public void testNestedRoles()
-      throws Exception
-  {
+  public void testNestedRoles() throws Exception {
     UserSearchCriteria criteria = new UserSearchCriteria();
     criteria.getOneOfRoleIds().add("Role1");
 
-    Set<User> result = this.getSecuritySystem().searchUsers(criteria);
+    Set<User> result = securitySystem.searchUsers(criteria);
 
-    Map<String, User> userMap = this.toUserMap(result);
-
+    Map<String, User> userMap = toUserMap(result);
     Assert.assertTrue("User not found in: " + userMap, userMap.containsKey("admin"));
     Assert.assertTrue("User not found in: " + userMap, userMap.containsKey("test-user"));
     Assert.assertTrue("User not found in: " + userMap, userMap.containsKey("jcoder"));
@@ -196,19 +193,13 @@ public class AdditinalRoleSecuritySystemTest
     // other user is only defined in the mapping, simulates a user that was deleted
 
     Assert.assertEquals(4, result.size());
-
   }
 
-  private User searchForSingleUser(UserSearchCriteria criteria, String userId, String source)
-      throws Exception
-  {
-    SecuritySystem userManager = this.getSecuritySystem();
-
+  private User searchForSingleUser(UserSearchCriteria criteria, String userId, String source) throws Exception {
     criteria.setSource(source);
-    Set<User> users = userManager.searchUsers(criteria);
+    Set<User> users = securitySystem.searchUsers(criteria);
 
-    Map<String, User> userMap = this.toUserMap(users);
-
+    Map<String, User> userMap = toUserMap(users);
     Assert.assertTrue("More then 1 User was returned: " + userMap.keySet(), users.size() <= 1);
 
     return userMap.get(userId);
@@ -229,5 +220,4 @@ public class AdditinalRoleSecuritySystemTest
     }
     return roleIds;
   }
-
 }

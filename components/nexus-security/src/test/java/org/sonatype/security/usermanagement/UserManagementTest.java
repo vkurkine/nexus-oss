@@ -10,26 +10,33 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security;
+package org.sonatype.security.usermanagement;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.sonatype.security.usermanagement.User;
-import org.sonatype.security.usermanagement.UserSearchCriteria;
+import org.sonatype.security.AbstractSecurityTest;
+import org.sonatype.security.SecuritySystem;
 
+import com.google.common.collect.ImmutableList;
 import junit.framework.Assert;
 
 public class UserManagementTest
     extends AbstractSecurityTest
 {
+  private SecuritySystem securitySystem;
 
-  public void testAllUsers()
-      throws Exception
-  {
-    SecuritySystem securitySystem = this.getSecuritySystem();
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
 
+    securitySystem = getSecuritySystem();
+
+    securitySystem.setRealms(ImmutableList.of("MockRealmA", "MockRealmB"));
+  }
+
+  public void testAllUsers() throws Exception {
     Set<User> users = securitySystem.listUsers();
     Assert.assertFalse(users.isEmpty());
 
@@ -47,21 +54,18 @@ public class UserManagementTest
     Assert.assertTrue(userMap.containsKey("jblevins"));
     Assert.assertTrue(userMap.containsKey("ksimmons"));
     Assert.assertTrue(userMap.containsKey("fdahmen"));
+
+    // FIXME: This is a wasted assertion
     Assert.assertTrue(userMap.containsKey("jcodar"));
 
-    // 2 different jcoders
-    Assert.assertEquals(11, users.size());
+    // FIXME: This is a pretty fragile assertion
+    Assert.assertEquals(15, users.size());
 
-    // we just need to check to make sure there are 2 jcoders with the correct source (the counts are already
-    // checked above)
+    // we just need to check to make sure there are 2 jcoders with the correct source
     this.verify2Jcoders(users);
   }
 
-  public void testSearchWithCriteria()
-      throws Exception
-  {
-    SecuritySystem securitySystem = this.getSecuritySystem();
-
+  public void testSearchWithCriteria() throws Exception {
     UserSearchCriteria criteria = new UserSearchCriteria();
 
     criteria.setUserId("pperalez");
@@ -119,5 +123,4 @@ public class UserManagementTest
     Assert.assertTrue(jcoders.containsKey("MockUserManagerA"));
     Assert.assertTrue(jcoders.containsKey("MockUserManagerB"));
   }
-
 }

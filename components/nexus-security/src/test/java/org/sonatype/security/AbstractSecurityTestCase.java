@@ -24,6 +24,7 @@ import org.sonatype.security.model.SecurityModelConfiguration;
 import org.sonatype.security.model.source.PreconfiguredSecurityModelConfigurationSource;
 import org.sonatype.security.model.source.SecurityModelConfigurationSource;
 import org.sonatype.security.usermanagement.UserManager;
+import org.sonatype.sisu.litmus.testsupport.TestUtil;
 
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
@@ -35,8 +36,9 @@ import org.eclipse.sisu.space.BeanScanning;
 public abstract class AbstractSecurityTestCase
     extends InjectedTestCase
 {
+  protected final TestUtil util = new TestUtil(this);
 
-  protected File PLEXUS_HOME = new File("./target/plexus_home");
+  protected File PLEXUS_HOME = util.resolveFile("target/plexus_home");
 
   protected File CONFIG_DIR = new File(PLEXUS_HOME, "etc");
 
@@ -71,9 +73,7 @@ public abstract class AbstractSecurityTestCase
   }
 
   @Override
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     FileUtils.deleteDirectory(PLEXUS_HOME);
     super.setUp();
     CONFIG_DIR.mkdirs();
@@ -81,9 +81,7 @@ public abstract class AbstractSecurityTestCase
   }
 
   @Override
-  protected void tearDown()
-      throws Exception
-  {
+  protected void tearDown() throws Exception {
     try {
       lookup(SecuritySystem.class).stop();
       lookup(CacheManager.class).shutdown();
@@ -104,5 +102,4 @@ public abstract class AbstractSecurityTestCase
   protected SecurityModelConfiguration getSecurityConfiguration() {
     return lookup(SecurityModelConfigurationSource.class, "default").getConfiguration();
   }
-
 }

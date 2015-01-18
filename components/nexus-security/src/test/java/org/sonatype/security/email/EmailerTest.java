@@ -10,9 +10,10 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security;
+package org.sonatype.security.email;
 
-import org.sonatype.security.email.SecurityEmailer;
+import org.sonatype.security.AbstractSecurityTest;
+import org.sonatype.security.SecuritySystem;
 import org.sonatype.security.mock.MockEmailer;
 import org.sonatype.security.usermanagement.UserNotFoundException;
 
@@ -53,7 +54,5 @@ public class EmailerTest
     catch (UserNotFoundException e) {
       // expected
     }
-
   }
-
 }
