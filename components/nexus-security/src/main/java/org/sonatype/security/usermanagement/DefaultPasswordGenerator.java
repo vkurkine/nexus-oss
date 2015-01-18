@@ -18,6 +18,9 @@ import javax.enterprise.inject.Typed;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
+
 /**
  * Default implementation of PasswordGenerator.
  */
@@ -55,6 +58,6 @@ public class DefaultPasswordGenerator
 
   @Override
   public String hashPassword(String password) {
-    return StringDigester.getSha1Digest(password);
+    return Hashing.sha1().hashString(password, Charsets.UTF_8).toString();
   }
 }
