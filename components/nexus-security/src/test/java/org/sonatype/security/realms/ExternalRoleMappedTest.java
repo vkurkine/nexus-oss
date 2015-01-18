@@ -30,6 +30,7 @@ import org.sonatype.security.usermanagement.MockUserManager;
 import org.sonatype.security.usermanagement.UserManager;
 
 import com.google.inject.Binder;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import junit.framework.Assert;
 import org.apache.shiro.realm.Realm;
@@ -45,11 +46,13 @@ public class ExternalRoleMappedTest
 
     binder.bind(UserManager.class)
         .annotatedWith(Names.named("Mock"))
-        .to(MockUserManager.class);
+        .to(MockUserManager.class)
+        .in(Singleton.class);
 
     binder.bind(Realm.class)
         .annotatedWith(Names.named("Mock"))
-        .to(MockRealm.class);
+        .to(MockRealm.class)
+        .in(Singleton.class);
   }
 
   public void testUserHasPermissionFromExternalRole() throws Exception {

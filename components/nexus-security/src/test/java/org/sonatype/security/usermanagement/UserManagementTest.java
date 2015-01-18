@@ -21,6 +21,7 @@ import org.sonatype.security.SecuritySystem;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Binder;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import junit.framework.Assert;
 
@@ -44,7 +45,8 @@ public class UserManagementTest
 
     binder.bind(UserManager.class)
         .annotatedWith(Names.named("Mock"))
-        .to(MockUserManager.class);
+        .to(MockUserManager.class)
+        .in(Singleton.class);
   }
 
   public void testAllUsers() throws Exception {
