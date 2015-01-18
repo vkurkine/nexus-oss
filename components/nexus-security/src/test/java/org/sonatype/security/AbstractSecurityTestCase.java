@@ -36,6 +36,8 @@ import org.eclipse.sisu.space.BeanScanning;
 public abstract class AbstractSecurityTestCase
     extends InjectedTestCase
 {
+  // FIXME: Convert to junit4
+
   protected final TestUtil util = new TestUtil(this);
 
   protected File PLEXUS_HOME = util.resolveFile("target/plexus_home");

@@ -24,6 +24,8 @@ import org.eclipse.sisu.launch.InjectedTestCase;
 public abstract class SecurityTestSupport
     extends InjectedTestCase
 {
+  // FIXME: Convert to junit4
+
   protected final TestUtil util = new TestUtil(this);
 
   @Override

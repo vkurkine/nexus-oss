@@ -19,6 +19,8 @@ import org.eclipse.sisu.launch.InjectedTestCase;
 public class DefaultPrivilegeInheritanceManagerTest
     extends InjectedTestCase
 {
+  // FIXME: Convert to junit4
+
   private DefaultPrivilegeInheritanceManager manager;
 
   protected void setUp()

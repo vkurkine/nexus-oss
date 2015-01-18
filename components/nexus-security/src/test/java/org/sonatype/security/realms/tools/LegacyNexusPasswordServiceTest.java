@@ -22,6 +22,8 @@ import static org.hamcrest.Matchers.is;
 public class LegacyNexusPasswordServiceTest
     extends InjectedTestCase
 {
+  // FIXME: Convert to junit4
+
   LegacyNexusPasswordService passwordService;
 
   @Override

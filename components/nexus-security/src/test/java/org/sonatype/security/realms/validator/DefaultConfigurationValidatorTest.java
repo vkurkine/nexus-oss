@@ -24,6 +24,8 @@ import org.eclipse.sisu.launch.InjectedTestCase;
 public class DefaultConfigurationValidatorTest
     extends InjectedTestCase
 {
+  // FIXME: Convert to junit4
+
   protected SecurityConfigurationValidator configurationValidator;
 
   public void setUp()
