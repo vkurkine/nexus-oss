@@ -15,17 +15,15 @@ package org.sonatype.security.usermanagement;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.sonatype.security.realms.ExternalRoleMappedTest;
 
-@Singleton
-@Named("Mock")
-@Typed(UserManager.class)
+/**
+ * @see ExternalRoleMappedTest
+ * @see UserManagementTest
+ */
 public class MockUserManager
     extends AbstractReadOnlyUserManager
 {
-
   public String getSource() {
     return "Mock";
   }
@@ -64,9 +62,7 @@ public class MockUserManager
     return null;
   }
 
-  public User getUser(String userId)
-      throws UserNotFoundException
-  {
+  public User getUser(String userId) throws UserNotFoundException {
     for (User user : this.listUsers()) {
       if (user.getUserId().equals(userId)) {
         return user;
@@ -74,5 +70,4 @@ public class MockUserManager
     }
     throw new UserNotFoundException(userId);
   }
-
 }

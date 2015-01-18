@@ -26,6 +26,8 @@ import org.sonatype.security.authorization.Role;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeDescriptor;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeMethodPropertyDescriptor;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegePermissionPropertyDescriptor;
+import org.sonatype.security.usermanagement.MockUserManager;
+import org.sonatype.security.usermanagement.UserManager;
 
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
@@ -40,6 +42,10 @@ public class ExternalRoleMappedTest
   @Override
   public void configure(final Binder binder) {
     super.configure(binder);
+
+    binder.bind(UserManager.class)
+        .annotatedWith(Names.named("Mock"))
+        .to(MockUserManager.class);
 
     binder.bind(Realm.class)
         .annotatedWith(Names.named("Mock"))

@@ -20,6 +20,8 @@ import org.sonatype.security.AbstractSecurityTest;
 import org.sonatype.security.SecuritySystem;
 
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Binder;
+import com.google.inject.name.Names;
 import junit.framework.Assert;
 
 public class UserManagementTest
@@ -34,6 +36,15 @@ public class UserManagementTest
     securitySystem = getSecuritySystem();
 
     securitySystem.setRealms(ImmutableList.of("MockRealmA", "MockRealmB"));
+  }
+
+  @Override
+  public void configure(final Binder binder) {
+    super.configure(binder);
+
+    binder.bind(UserManager.class)
+        .annotatedWith(Names.named("Mock"))
+        .to(MockUserManager.class);
   }
 
   public void testAllUsers() throws Exception {
