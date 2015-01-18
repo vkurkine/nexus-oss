@@ -15,17 +15,11 @@ package org.sonatype.security.authorization;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
-import javax.inject.Singleton;
+// FIXME: Appears unused
 
-@Singleton
-@Named("Mock")
-@Typed(AuthorizationManager.class)
 public class MockAuthorizationManager
     extends AbstractReadOnlyAuthorizationManager
 {
-
   public String getSource() {
     return "Mock";
   }
@@ -40,9 +34,7 @@ public class MockAuthorizationManager
     return roles;
   }
 
-  public Role getRole(String roleId)
-      throws NoSuchRoleException
-  {
+  public Role getRole(String roleId) throws NoSuchRoleException {
     for (Role role : this.listRoles()) {
       if (roleId.equals(role.getRoleId())) {
         return role;
@@ -55,10 +47,7 @@ public class MockAuthorizationManager
     return new HashSet<Privilege>();
   }
 
-  public Privilege getPrivilege(String privilegeId)
-      throws NoSuchPrivilegeException
-  {
+  public Privilege getPrivilege(String privilegeId) throws NoSuchPrivilegeException {
     throw new NoSuchPrivilegeException("Privilege: " + privilegeId + " could not be found.");
   }
-
 }
