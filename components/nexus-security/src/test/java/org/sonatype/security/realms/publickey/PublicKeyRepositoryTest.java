@@ -16,12 +16,17 @@ import java.security.PublicKey;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
+
 import junit.framework.Assert;
 import org.junit.Test;
 
+/**
+ * Tests for {@link PublicKeyRepository}.
+ */
 public class PublicKeyRepositoryTest
+  extends TestSupport
 {
-
   /**
    * @return the PublicKeyRepository under test.
    */

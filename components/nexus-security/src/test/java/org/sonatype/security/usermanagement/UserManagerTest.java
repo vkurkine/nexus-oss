@@ -45,22 +45,16 @@ public class UserManagerTest
   }
 
   @Override
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
     passwordService = lookup(PasswordService.class, "default");
   }
 
-  public ConfigurationManager getConfigurationManager()
-      throws Exception
-  {
+  public ConfigurationManager getConfigurationManager() throws Exception {
     return lookup(ConfigurationManager.class);
   }
 
-  public void testGetUser()
-      throws Exception
-  {
+  public void testGetUser() throws Exception {
     UserManager userManager = this.getUserManager();
 
     User user = userManager.getUser("test-user");
@@ -79,9 +73,7 @@ public class UserManagerTest
     Assert.assertEquals(2, roleIds.size());
   }
 
-  public void testAddUser()
-      throws Exception
-  {
+  public void testAddUser() throws Exception {
     UserManager userManager = this.getUserManager();
 
     User user = new User();
@@ -113,15 +105,11 @@ public class UserManagerTest
     Assert.assertEquals(2, roleMapping.getRoles().size());
   }
 
-  public void testSupportsWrite()
-      throws Exception
-  {
+  public void testSupportsWrite() throws Exception {
     Assert.assertTrue(this.getUserManager().supportsWrite());
   }
 
-  public void testChangePassword()
-      throws Exception
-  {
+  public void testChangePassword() throws Exception {
     UserManager userManager = this.getUserManager();
     userManager.changePassword("test-user", "new-user-password");
 
@@ -129,9 +117,7 @@ public class UserManagerTest
     assertThat(this.passwordService.passwordsMatch("new-user-password", user.getPassword()), is(true));
   }
 
-  public void testUpdateUser()
-      throws Exception
-  {
+  public void testUpdateUser() throws Exception {
     UserManager userManager = this.getUserManager();
 
     User user = userManager.getUser("test-user");
@@ -161,9 +147,7 @@ public class UserManagerTest
     Assert.assertEquals("roles: " + roleMapping.getRoles(), 1, roleMapping.getRoles().size());
   }
 
-  public void testDeleteUser()
-      throws Exception
-  {
+  public void testDeleteUser() throws Exception {
     UserManager userManager = this.getUserManager();
     try {
       userManager.deleteUser("INVALID-USERNAME");
@@ -202,10 +186,7 @@ public class UserManagerTest
     }
   }
 
-  public void testDeleteUserAndUserRoleMappings()
-      throws Exception
-  {
-
+  public void testDeleteUserAndUserRoleMappings() throws Exception {
     String userId = "testDeleteUserAndUserRoleMappings";
 
     UserManager userManager = this.getUserManager();
@@ -239,9 +220,7 @@ public class UserManagerTest
     }
   }
 
-  public void testSetUsersRoles()
-      throws Exception
-  {
+  public void testSetUsersRoles() throws Exception {
     SecuritySystem securitySystem = this.getSecuritySystem();
 
     Set<RoleIdentifier> roleIdentifiers = new HashSet<RoleIdentifier>();
@@ -264,9 +243,7 @@ public class UserManagerTest
     Assert.assertTrue("did not find admin user in role mapping", found);
   }
 
-  public void testSetUserRolesForAnonymous()
-      throws Exception
-  {
+  public void testSetUserRolesForAnonymous() throws Exception {
     SecuritySystem securitySystem = this.getSecuritySystem();
 
     User anon = securitySystem.getUser(securitySystem.getAnonymousUsername(), "default");

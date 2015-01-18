@@ -25,21 +25,16 @@ import junit.framework.Assert;
 public class UserRoleMappingTest
     extends AbstractSecurityTestCase
 {
-
   @Override
   protected Configuration getSecurityModelConfig() {
     return UserRoleMappingTestSecurity.securityModel();
   }
 
-  public ConfigurationManager getConfigManager()
-      throws Exception
-  {
+  public ConfigurationManager getConfigManager() throws Exception {
     return this.lookup(DefaultConfigurationManager.class);
   }
 
-  public void testGetUser()
-      throws Exception
-  {
+  public void testGetUser() throws Exception {
     ConfigurationManager config = this.getConfigManager();
 
     CUser user = config.readUser("test-user");
@@ -57,9 +52,7 @@ public class UserRoleMappingTest
     Assert.assertEquals(2, mapping.getRoles().size());
   }
 
-  public void testGetUserWithEmptyRole()
-      throws Exception
-  {
+  public void testGetUserWithEmptyRole() throws Exception {
     ConfigurationManager config = this.getConfigManager();
 
     CUser user = config.readUser("test-user-with-empty-role");
@@ -89,9 +82,7 @@ public class UserRoleMappingTest
     Assert.assertEquals(3, mapping.getRoles().size());
   }
 
-  public void testUpdateUsersRoles()
-      throws Exception
-  {
+  public void testUpdateUsersRoles() throws Exception {
     ConfigurationManager config = this.getConfigManager();
 
     // make sure we have exactly 4 user role mappings
@@ -110,5 +101,4 @@ public class UserRoleMappingTest
     // make sure we have exactly 4 user role mappings
     Assert.assertEquals(5, config.listUserRoleMappings().size());
   }
-
 }

@@ -28,16 +28,12 @@ public class DefaultConfigurationValidatorTest
 
   protected SecurityConfigurationValidator configurationValidator;
 
-  public void setUp()
-      throws Exception
-  {
+  public void setUp() throws Exception {
     super.setUp();
     this.configurationValidator = lookup(SecurityConfigurationValidator.class);
   }
 
-  public void testBad1()
-      throws Exception
-  {
+  public void testBad1() throws Exception {
     ValidationResponse response = configurationValidator.validateModel(new ValidationRequest<>(
         DefaultConfigurationValidatorTestSecurity.securityModel1()
     ));
@@ -52,9 +48,7 @@ public class DefaultConfigurationValidatorTest
     assertEquals(0, response.getValidationWarnings().size());
   }
 
-  public void testBad2()
-      throws Exception
-  {
+  public void testBad2() throws Exception {
     ValidationResponse response = configurationValidator.validateModel(new ValidationRequest<>(
         DefaultConfigurationValidatorTestSecurity.securityModel2()
     ));
@@ -68,9 +62,7 @@ public class DefaultConfigurationValidatorTest
     assertEquals(10, response.getValidationErrors().size());
   }
 
-  public void testBad3()
-      throws Exception
-  {
+  public void testBad3() throws Exception {
     ValidationResponse response = configurationValidator.validateModel(new ValidationRequest<>(
         DefaultConfigurationValidatorTestSecurity.securityModel3()
     ));
@@ -84,9 +76,7 @@ public class DefaultConfigurationValidatorTest
     assertEquals(2, response.getValidationErrors().size());
   }
 
-  public void testRoles()
-      throws Exception
-  {
+  public void testRoles() throws Exception {
     SecurityValidationContext context = new SecurityValidationContext();
 
     CPrivilege priv = new CPrivilege();

@@ -47,9 +47,7 @@ public class AuthenticatingRealmImplTest
   private CUser testUser;
 
   @Override
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
 
     realm = (AuthenticatingRealmImpl) lookup(Realm.class, "NexusAuthenticatingRealm");
@@ -60,9 +58,7 @@ public class AuthenticatingRealmImplTest
     passwordService = lookup(PasswordService.class, "default");
   }
 
-  public void testSuccessfulAuthentication()
-      throws Exception
-  {
+  public void testSuccessfulAuthentication() throws Exception {
     buildTestAuthenticationConfig(CUser.STATUS_ACTIVE);
 
     UsernamePasswordToken upToken = new UsernamePasswordToken("username", "password");
@@ -74,9 +70,7 @@ public class AuthenticatingRealmImplTest
     assertThat(this.passwordService.passwordsMatch("password", password), is(true));
   }
 
-  public void testCreateWithPassowrd()
-      throws Exception
-  {
+  public void testCreateWithPassowrd() throws Exception {
     buildTestAuthenticationConfig(CUser.STATUS_ACTIVE);
 
     String clearPassword = "default-password";
@@ -103,9 +97,7 @@ public class AuthenticatingRealmImplTest
     assertThat(this.passwordService.passwordsMatch(clearPassword, password), is(true));
   }
 
-  public void testFailedAuthentication()
-      throws Exception
-  {
+  public void testFailedAuthentication() throws Exception {
     buildTestAuthenticationConfig(CUser.STATUS_ACTIVE);
 
     UsernamePasswordToken upToken = new UsernamePasswordToken("username", "badpassword");
@@ -120,9 +112,7 @@ public class AuthenticatingRealmImplTest
     }
   }
 
-  public void testDisabledAuthentication()
-      throws Exception
-  {
+  public void testDisabledAuthentication() throws Exception {
     buildTestAuthenticationConfig(CUser.STATUS_DISABLED);
 
     UsernamePasswordToken upToken = new UsernamePasswordToken("username", "password");
@@ -137,9 +127,7 @@ public class AuthenticatingRealmImplTest
     }
   }
 
-  public void testDetectLegacyUser()
-      throws Exception
-  {
+  public void testDetectLegacyUser() throws Exception {
     String password = "password";
     String username = "username";
     buildLegacyTestAuthenticationConfig(password);
@@ -153,15 +141,11 @@ public class AuthenticatingRealmImplTest
     assertThat(this.passwordService.passwordsMatch(password, updatedUser.getPassword()), is(true));
   }
 
-  private void buildTestAuthenticationConfig(String status)
-      throws InvalidConfigurationException
-  {
+  private void buildTestAuthenticationConfig(String status) throws InvalidConfigurationException {
     buildTestAuthenticationConfig(status, this.hashPassword("password"));
   }
 
-  private void buildTestAuthenticationConfig(String status, String hash)
-      throws InvalidConfigurationException
-  {
+  private void buildTestAuthenticationConfig(String status, String hash) throws InvalidConfigurationException {
     CPrivilege priv = new CPrivilege();
     priv.setId("priv");
     priv.setName("name");
@@ -194,9 +178,7 @@ public class AuthenticatingRealmImplTest
     configurationManager.createUser(testUser, roles);
   }
 
-  private void buildLegacyTestAuthenticationConfig(String password)
-      throws InvalidConfigurationException
-  {
+  private void buildLegacyTestAuthenticationConfig(String password) throws InvalidConfigurationException {
     buildTestAuthenticationConfig(CUser.STATUS_ACTIVE, this.legacyHashPassword(password));
   }
 

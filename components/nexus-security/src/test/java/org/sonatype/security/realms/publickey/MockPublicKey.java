@@ -36,5 +36,4 @@ public class MockPublicKey
   public String getFormat() {
     return "ummm";
   }
-
 }

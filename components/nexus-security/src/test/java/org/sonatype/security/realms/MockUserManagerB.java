@@ -16,7 +16,6 @@ import javax.enterprise.inject.Typed;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.security.usermanagement.AbstractMockUserManager;
 import org.sonatype.security.usermanagement.RoleIdentifier;
 import org.sonatype.security.usermanagement.User;
 import org.sonatype.security.usermanagement.UserManager;
@@ -26,7 +25,7 @@ import org.sonatype.security.usermanagement.UserStatus;
 @Typed(UserManager.class)
 @Named("MockUserManagerB")
 public class MockUserManagerB
-    extends AbstractMockUserManager
+    extends MockUserManagerSupport
 {
   public MockUserManagerB() {
     User a = new User();

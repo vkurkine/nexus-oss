@@ -23,17 +23,13 @@ public class DefaultSecurityConfigurationCleanerTest
   private DefaultSecurityConfigurationCleaner cleaner;
 
   @Override
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
 
     cleaner = (DefaultSecurityConfigurationCleaner) lookup(SecurityConfigurationCleaner.class);
   }
 
-  public void testRemovePrivilege()
-      throws Exception
-  {
+  public void testRemovePrivilege() throws Exception {
     Configuration configuration = DefaultSecurityConfigurationCleanerTestSecurity.securityModel();
 
     String privilegeId = configuration.getPrivileges().get(0).getId();
@@ -47,9 +43,7 @@ public class DefaultSecurityConfigurationCleanerTest
     }
   }
 
-  public void testRemoveRole()
-      throws Exception
-  {
+  public void testRemoveRole() throws Exception {
     Configuration configuration = DefaultSecurityConfigurationCleanerTestSecurity.securityModel();
 
     String roleId = configuration.getRoles().get(0).getId();

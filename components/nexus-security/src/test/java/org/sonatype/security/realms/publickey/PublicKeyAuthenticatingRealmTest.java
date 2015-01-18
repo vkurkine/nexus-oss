@@ -16,6 +16,8 @@ import java.security.PublicKey;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
+
 import junit.framework.Assert;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -23,9 +25,12 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.junit.Test;
 
+/**
+ * Tests for {@link PublicKeyAuthenticatingRealm}.
+ */
 public class PublicKeyAuthenticatingRealmTest
+  extends TestSupport
 {
-
   @Test
   public void testSuccess() {
     SimplePublicKeyRepository publicKeyRepository = new SimplePublicKeyRepository();

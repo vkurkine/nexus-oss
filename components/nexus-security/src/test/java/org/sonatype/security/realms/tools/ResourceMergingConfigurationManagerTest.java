@@ -41,17 +41,13 @@ public class ResourceMergingConfigurationManagerTest
   }
 
   @Override
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
 
     manager = lookup(ConfigurationManager.class);
   }
 
-  public void testRoleMerging()
-      throws Exception
-  {
+  public void testRoleMerging() throws Exception {
     List<CRole> roles = manager.listRoles();
 
     CRole anon = manager.readRole("anon");
@@ -82,9 +78,7 @@ public class ResourceMergingConfigurationManagerTest
 
   }
 
-  public void testPrivsMerging()
-      throws Exception
-  {
+  public void testPrivsMerging() throws Exception {
     List<CPrivilege> privs = manager.listPrivileges();
 
     CPrivilege priv = manager.readPrivilege("1-test");

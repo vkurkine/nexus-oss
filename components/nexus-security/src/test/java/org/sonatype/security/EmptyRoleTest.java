@@ -43,9 +43,7 @@ import org.apache.shiro.subject.Subject;
 public class EmptyRoleTest
     extends AbstractSecurityTestCase
 {
-  public void testCreateEmptyRole()
-      throws Exception
-  {
+  public void testCreateEmptyRole() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
     AuthorizationManager authManager = securitySystem.getAuthorizationManager("default");
 
@@ -72,12 +70,9 @@ public class EmptyRoleTest
 
   /**
    * Note: this test is kinda useless, as Security system (as underlying Shiro) is not "reloadable": once created,
-   * you
-   * need to toss it away and ask another instance from Guice, we cannot reload security currently.
+   * you need to toss it away and ask another instance from Guice, we cannot reload security currently.
    */
-  public void testReloadSecurityWithEmptyRole()
-      throws Exception
-  {
+  public void testReloadSecurityWithEmptyRole() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
     AuthorizationManager authManager = securitySystem.getAuthorizationManager("default");
 
@@ -90,9 +85,7 @@ public class EmptyRoleTest
     Assert.assertNotNull(authManager.getRole(emptyRole.getRoleId()));
   }
 
-  public void testAuthorizeUserWithEmptyRole()
-      throws Exception
-  {
+  public void testAuthorizeUserWithEmptyRole() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
     securitySystem.setRealms(Arrays.asList(AuthenticatingRealmImpl.ROLE, AuthorizingRealmImpl.ROLE));
     AuthorizationManager authManager = securitySystem.getAuthorizationManager("default");
@@ -123,9 +116,7 @@ public class EmptyRoleTest
     subject.checkPermission("app:config:read");
   }
 
-  public void testSearchForUserWithEmptyRole()
-      throws Exception
-  {
+  public void testSearchForUserWithEmptyRole() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
     AuthorizationManager authManager = securitySystem.getAuthorizationManager("default");
 
@@ -163,9 +154,7 @@ public class EmptyRoleTest
     return user;
   }
 
-  private String createTestPriv()
-      throws InvalidConfigurationException
-  {
+  private String createTestPriv() throws InvalidConfigurationException {
     CPrivilege priv = new CPrivilege();
     priv.setId("priv-" + Math.random());
     priv.setName("somepriv");
@@ -188,5 +177,4 @@ public class EmptyRoleTest
 
     return emptyRole;
   }
-
 }

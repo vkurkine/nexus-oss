@@ -10,16 +10,20 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.usermanagement;
+package org.sonatype.security.realms;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractMockUserManager
+import org.sonatype.security.usermanagement.AbstractUserManager;
+import org.sonatype.security.usermanagement.User;
+import org.sonatype.security.usermanagement.UserNotFoundException;
+import org.sonatype.security.usermanagement.UserSearchCriteria;
+
+public abstract class MockUserManagerSupport
     extends AbstractUserManager
 {
-
   private Set<User> users = new HashSet<User>();
 
   public boolean supportsWrite() {
@@ -31,9 +35,7 @@ public abstract class AbstractMockUserManager
     return user;
   }
 
-  public User updateUser(User user)
-      throws UserNotFoundException
-  {
+  public User updateUser(User user) throws UserNotFoundException {
     User existingUser = this.getUser(user.getUserId());
 
     if (existingUser == null) {
@@ -43,9 +45,7 @@ public abstract class AbstractMockUserManager
     return user;
   }
 
-  public void deleteUser(String userId)
-      throws UserNotFoundException
-  {
+  public void deleteUser(String userId) throws UserNotFoundException {
     User existingUser = this.getUser(userId);
 
     if (existingUser == null) {
@@ -53,7 +53,6 @@ public abstract class AbstractMockUserManager
     }
 
     this.getUsers().remove(existingUser);
-
   }
 
   public User getUser(String userId) {
@@ -87,8 +86,7 @@ public abstract class AbstractMockUserManager
     return users;
   }
 
-  public void changePassword(String userId, String newPassword)
-      throws UserNotFoundException
-  {
+  public void changePassword(String userId, String newPassword) throws UserNotFoundException {
+    // empty
   }
 }

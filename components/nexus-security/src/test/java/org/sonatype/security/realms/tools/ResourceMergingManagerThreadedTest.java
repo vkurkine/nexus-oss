@@ -66,9 +66,7 @@ public class ResourceMergingManagerThreadedTest
   }
 
   @Override
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
 
     this.manager = lookup(ConfigurationManager.class);
@@ -87,9 +85,7 @@ public class ResourceMergingManagerThreadedTest
     }
   }
 
-  public void testThreading()
-      throws Throwable
-  {
+  public void testThreading() throws Throwable {
     TestFramework.runOnce(new MultithreadedTestCase()
     {
       // public void initialize()
@@ -131,7 +127,5 @@ public class ResourceMergingManagerThreadedTest
               + ((UnitTestDynamicSecurityResource) dynamicSecurityResource).getId(),
               ((UnitTestDynamicSecurityResource) dynamicSecurityResource).isConfigCalledAfterSetDirty());
     }
-
   }
-
 }

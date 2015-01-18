@@ -32,18 +32,18 @@ import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 
+/**
+ * Tests for {@link AuthorizingRealmImpl}.
+ */
 public class AuthorizingRealmImplTest
     extends AbstractSecurityTestCase
 {
-
   private AuthorizingRealmImpl realm;
 
   private DefaultConfigurationManager configurationManager;
 
   @Override
-  protected void setUp()
-      throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
 
     realm = (AuthorizingRealmImpl) lookup(Realm.class, "NexusAuthorizingRealm");
@@ -52,9 +52,7 @@ public class AuthorizingRealmImplTest
     configurationManager = lookup(DefaultConfigurationManager.class);
   }
 
-  public void testAuthorization()
-      throws Exception
-  {
+  public void testAuthorization() throws Exception {
     buildTestAuthorizationConfig();
 
     // Fails because the configuration requirement in nexus authorizing realm isn't initialized
@@ -77,15 +75,11 @@ public class AuthorizingRealmImplTest
     Assert.assertFalse(realm.isPermitted(principal, new WildcardPermission("app:ui:delete")));
   }
 
-  private void buildTestAuthorizationConfig()
-      throws InvalidConfigurationException
-  {
+  private void buildTestAuthorizationConfig() throws InvalidConfigurationException {
     buildTestAuthorizationConfig("username");
   }
 
-  private void buildTestAuthorizationConfig(String userId)
-      throws InvalidConfigurationException
-  {
+  private void buildTestAuthorizationConfig(String userId) throws InvalidConfigurationException {
     CPrivilege priv = new CPrivilege();
     priv.setId("priv");
     priv.setName("somepriv");
@@ -117,5 +111,4 @@ public class AuthorizingRealmImplTest
 
     configurationManager.createUser(user, roles);
   }
-
 }

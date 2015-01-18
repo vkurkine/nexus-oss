@@ -10,11 +10,13 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security;
+package org.sonatype.security.realms;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sonatype.security.AbstractSecurityTest;
+import org.sonatype.security.SecuritySystem;
 import org.sonatype.security.usermanagement.User;
 
 import junit.framework.Assert;
@@ -22,11 +24,7 @@ import junit.framework.Assert;
 public class OrderingRealmsTest
     extends AbstractSecurityTest
 {
-
-  public void testOrderedGetUser()
-      throws Exception
-  {
-
+  public void testOrderedGetUser() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
 
     List<String> realmHints = new ArrayList<String>();
@@ -51,7 +49,5 @@ public class OrderingRealmsTest
 
     // make sure jcoder is from MockUserManagerA
     Assert.assertEquals("MockUserManagerB", jcoder.getSource());
-
   }
-
 }

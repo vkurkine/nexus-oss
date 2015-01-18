@@ -24,15 +24,12 @@ import junit.framework.Assert;
 public class MissingRoleUserManagerTest
     extends AbstractSecurityTestCase
 {
-
   @Override
   protected Configuration getSecurityModelConfig() {
     return MissingRoleUserManagerTestSecurity.securityModel();
   }
 
-  public void testInvalidRoleMapping()
-      throws Exception
-  {
+  public void testInvalidRoleMapping() throws Exception {
     SecuritySystem userManager = getSecuritySystem();
 
     User user = userManager.getUser("jcoder");
@@ -45,5 +42,4 @@ public class MissingRoleUserManagerTest
     }
     Assert.assertFalse(roleIds.contains("INVALID-ROLE-BLA-BLA"));
   }
-
 }

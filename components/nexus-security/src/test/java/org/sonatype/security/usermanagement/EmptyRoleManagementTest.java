@@ -25,7 +25,6 @@ import junit.framework.Assert;
 public class EmptyRoleManagementTest
     extends AbstractSecurityTestCase
 {
-
   @Override
   protected Configuration getSecurityModelConfig() {
     return EmptyRoleManagementTestSecurity.securityModel();
@@ -54,9 +53,7 @@ public class EmptyRoleManagementTest
     }
   }
 
-  public void testDeleteEmptyRoleFromUser()
-      throws Exception
-  {
+  public void testDeleteEmptyRoleFromUser() throws Exception {
     String userId = "test-user-with-empty-role";
     String roleId = "empty-role";
 
@@ -85,9 +82,7 @@ public class EmptyRoleManagementTest
     }
   }
 
-  public void testUpdateUser()
-      throws Exception
-  {
+  public void testUpdateUser() throws Exception {
     String userId = "test-user-with-empty-role";
 
     UserManager userManager = this.getUserManager();
@@ -124,9 +119,7 @@ public class EmptyRoleManagementTest
     assertTrue("userRoleMapping not found", found);
   }
 
-  public void testDeleteOtherRoleFromUser()
-      throws Exception
-  {
+  public void testDeleteOtherRoleFromUser() throws Exception {
     String userId = "test-user-with-empty-role";
     String roleId = "role1";
 
@@ -154,5 +147,4 @@ public class EmptyRoleManagementTest
       }
     }
   }
-
 }
