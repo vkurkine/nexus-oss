@@ -10,15 +10,10 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.locators;
+package org.sonatype.security.usermanagement;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import org.sonatype.security.usermanagement.AbstractReadOnlyUserManager;
-import org.sonatype.security.usermanagement.RoleIdentifier;
-import org.sonatype.security.usermanagement.User;
-import org.sonatype.security.usermanagement.UserSearchCriteria;
 
 public abstract class AbstractTestUserManager
     extends AbstractReadOnlyUserManager

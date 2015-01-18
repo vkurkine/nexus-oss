@@ -10,18 +10,22 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.locators.users;
 
-import org.sonatype.security.authorization.Role;
+package org.sonatype.security.authorization;
+
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
 
 import junit.framework.Assert;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.junit.Test;
 
+/**
+ * Tests for {@link Role}.
+ */
 public class RoleTest
-    extends InjectedTestCase
+    extends TestSupport
 {
-
-  public void testCompareDifferentId() {
+  @Test
+  public void testCompareDifferentId() throws Exception {
     Role roleA = new Role();
     roleA.setName("ID1");
     roleA.setRoleId("ID1");
@@ -34,10 +38,10 @@ public class RoleTest
 
     Assert.assertEquals(-1, roleA.compareTo(roleB));
     Assert.assertEquals(1, roleB.compareTo(roleA));
-
   }
 
-  public void testCompareDifferentSource() {
+  @Test
+  public void testCompareDifferentSource() throws Exception {
     Role roleA = new Role();
     roleA.setName("ID1");
     roleA.setRoleId("ID1");
@@ -50,7 +54,5 @@ public class RoleTest
 
     Assert.assertEquals(-1, roleA.compareTo(roleB));
     Assert.assertEquals(1, roleB.compareTo(roleA));
-
   }
-
 }

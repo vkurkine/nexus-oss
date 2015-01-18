@@ -10,31 +10,32 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.mock.realms;
+package org.sonatype.security.realms;
 
 import javax.enterprise.inject.Typed;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import org.sonatype.security.usermanagement.UserManager;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.subject.PrincipalCollection;
 
 @Singleton
 @Typed(Realm.class)
-@Named("MockRealmB")
-public class MockRealmB
-    extends AuthorizingRealm
+@Named("MockRealmA")
+public class MockRealmA
+    extends AuthenticatingRealm
 {
 
-  public MockRealmB() {
+  @Inject
+  public MockRealmA(@Named("MockUserManagerA") UserManager userManager) {
     this.setAuthenticationTokenClass(UsernamePasswordToken.class);
   }
 
@@ -43,10 +44,10 @@ public class MockRealmB
       throws AuthenticationException
   {
 
-    // only allow jcool/jcool
+    // only allow jcoder/jcoder
 
     UsernamePasswordToken userpass = (UsernamePasswordToken) token;
-    if ("jcool".equals(userpass.getUsername()) && "jcool".equals(new String(userpass.getPassword()))) {
+    if ("jcoder".equals(userpass.getUsername()) && "jcoder".equals(new String(userpass.getPassword()))) {
       return new SimpleAuthenticationInfo(userpass.getUsername(), new String(userpass.getPassword()),
           this.getName());
     }
@@ -55,28 +56,8 @@ public class MockRealmB
   }
 
   @Override
-  protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-
-    // make sure the user is jcool, (its just for testing)
-
-    if (principals.asList().get(0).toString().equals("jcool")) {
-      SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-
-      info.addRole("test-role1");
-      info.addRole("test-role2");
-
-      info.addStringPermission("test:*");
-
-      return info;
-
-    }
-
-    return null;
-  }
-
-  @Override
   public String getName() {
-    return "MockRealmB";
+    return "MockRealmA";
   }
 
 }

@@ -23,7 +23,6 @@ import org.sonatype.security.SecuritySystem;
 import org.sonatype.security.authorization.AuthorizationException;
 import org.sonatype.security.authorization.Privilege;
 import org.sonatype.security.authorization.Role;
-import org.sonatype.security.mock.MockRealm;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeDescriptor;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeMethodPropertyDescriptor;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegePermissionPropertyDescriptor;

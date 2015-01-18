@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.mock.authorization;
+package org.sonatype.security.authorization;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,61 +19,46 @@ import javax.enterprise.inject.Typed;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.security.authorization.AbstractReadOnlyAuthorizationManager;
-import org.sonatype.security.authorization.AuthorizationManager;
-import org.sonatype.security.authorization.NoSuchPrivilegeException;
-import org.sonatype.security.authorization.NoSuchRoleException;
-import org.sonatype.security.authorization.Privilege;
-import org.sonatype.security.authorization.Role;
-
 @Singleton
+@Named("Mock")
 @Typed(AuthorizationManager.class)
-@Named("sourceB")
-public class MockAuthorizationManagerB
+public class MockAuthorizationManager
     extends AbstractReadOnlyAuthorizationManager
 {
 
   public String getSource() {
-    return "sourceB";
+    return "Mock";
   }
 
   public Set<Role> listRoles() {
     Set<Role> roles = new HashSet<Role>();
 
-    Role role1 = new Role();
-    role1.setSource(this.getSource());
-    role1.setName("Role 1");
-    role1.setRoleId("test-role1");
-    role1.addPrivilege("from-role1:read");
-    role1.addPrivilege("from-role1:delete");
-
-    Role role2 = new Role();
-    role2.setSource(this.getSource());
-    role2.setName("Role 2");
-    role2.setRoleId("test-role2");
-    role2.addPrivilege("from-role2:read");
-    role2.addPrivilege("from-role2:delete");
-
-    roles.add(role1);
-    roles.add(role2);
+    roles.add(new Role("mockrole1", "MockRole1", "Mock Role1", "Mock", true, null, null));
+    roles.add(new Role("mockrole2", "MockRole2", "Mock Role2", "Mock", true, null, null));
+    roles.add(new Role("mockrole3", "MockRole3", "Mock Role3", "Mock", true, null, null));
 
     return roles;
-  }
-
-  public Privilege getPrivilege(String privilegeId)
-      throws NoSuchPrivilegeException
-  {
-    return null;
   }
 
   public Role getRole(String roleId)
       throws NoSuchRoleException
   {
-    return null;
+    for (Role role : this.listRoles()) {
+      if (roleId.equals(role.getRoleId())) {
+        return role;
+      }
+    }
+    throw new NoSuchRoleException("Role: " + roleId + " could not be found.");
   }
 
   public Set<Privilege> listPrivileges() {
-    return null;
+    return new HashSet<Privilege>();
+  }
+
+  public Privilege getPrivilege(String privilegeId)
+      throws NoSuchPrivilegeException
+  {
+    throw new NoSuchPrivilegeException("Privilege: " + privilegeId + " could not be found.");
   }
 
 }

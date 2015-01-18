@@ -15,6 +15,7 @@ package org.sonatype.security.locators;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sonatype.security.usermanagement.AbstractTestUserManager;
 import org.sonatype.security.usermanagement.User;
 import org.sonatype.security.usermanagement.UserStatus;
 

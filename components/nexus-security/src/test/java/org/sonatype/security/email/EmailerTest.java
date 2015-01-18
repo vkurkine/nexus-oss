@@ -14,7 +14,6 @@ package org.sonatype.security.email;
 
 import org.sonatype.security.AbstractSecurityTest;
 import org.sonatype.security.SecuritySystem;
-import org.sonatype.security.mock.MockEmailer;
 import org.sonatype.security.usermanagement.UserNotFoundException;
 
 import com.google.inject.Binder;

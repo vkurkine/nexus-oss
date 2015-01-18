@@ -12,7 +12,7 @@
  */
 package org.sonatype.security;
 
-import org.sonatype.security.mock.realms.MockRealmB;
+import org.sonatype.security.realms.MockRealmB;
 import org.sonatype.security.usermanagement.User;
 
 import junit.framework.Assert;

@@ -10,11 +10,9 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.mock;
+package org.sonatype.security.email;
 
 import java.util.List;
-
-import org.sonatype.security.email.SecurityEmailer;
 
 public class MockEmailer
     implements SecurityEmailer

@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.security.locators;
+package org.sonatype.security.usermanagement;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +18,6 @@ import java.util.Set;
 
 import org.sonatype.security.AbstractSecurityTestCase;
 import org.sonatype.security.model.Configuration;
-import org.sonatype.security.usermanagement.RoleIdentifier;
-import org.sonatype.security.usermanagement.User;
-import org.sonatype.security.usermanagement.UserManager;
-import org.sonatype.security.usermanagement.UserSearchCriteria;
 
 import junit.framework.Assert;
 
@@ -30,7 +26,7 @@ import junit.framework.Assert;
 /**
  * Tests for {@link UserManager}.
  */
-public class UserManagerTest
+public class UserManager2Test
     extends AbstractSecurityTestCase
 {
   private UserManager underTest;
@@ -43,7 +39,7 @@ public class UserManagerTest
 
   @Override
   protected Configuration getSecurityModelConfig() {
-    return UserManagerTestSecurity.securityModel();
+    return UserManager2TestSecurity.securityModel();
   }
 
   public void testListUserIds() throws Exception {
