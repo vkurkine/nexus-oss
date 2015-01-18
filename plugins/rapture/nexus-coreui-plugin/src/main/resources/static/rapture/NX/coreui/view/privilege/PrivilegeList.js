@@ -36,19 +36,25 @@ Ext.define('NX.coreui.view.privilege.PrivilegeList', {
       iconNamePrefix: 'privilege-'
     },
 
+    // HACK: expose the privilege TYPE in the grid
+    { header: 'Type', dataIndex: 'type', flex: 1 },
+
     // HACK: expose the privilege ID in the grid
     { header: 'ID', dataIndex: 'id', flex: 1 },
 
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_NAME_COLUMN'), dataIndex: 'name', flex: 1 },
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_DESCRIPTION_COLUMN'), dataIndex: 'description', flex: 1 },
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_TYPE_COLUMN'), dataIndex: 'typeName', flex: 1 },
+    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_DESCRIPTION_COLUMN'), dataIndex: 'description', flex: 2 },
+
+    // HACK: Hide these for now
+    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_NAME_COLUMN'), dataIndex: 'name', flex: 1, hidden: true },
+    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_TYPE_COLUMN'), dataIndex: 'typeName', flex: 1, hidden: true },
 
     // HACK: expose the real shiro permission string
     { header: 'Real Permission', dataIndex: 'realPermission', flex: 1 },
 
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_TARGET_COLUMN'), dataIndex: 'repositoryTargetName', flex: 1 },
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_REPOSITORY_COLUMN'), dataIndex: 'repositoryName', flex: 1 },
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_METHOD_COLUMN'), dataIndex: 'method', flex: 1 }
+    // HACK: Hide these for now
+    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_TARGET_COLUMN'), dataIndex: 'repositoryTargetName', flex: 1, hidden: true },
+    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_REPOSITORY_COLUMN'), dataIndex: 'repositoryName', flex: 1, hidden: true },
+    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_METHOD_COLUMN'), dataIndex: 'method', flex: 1, hidden: true }
   ],
 
   viewConfig: {
