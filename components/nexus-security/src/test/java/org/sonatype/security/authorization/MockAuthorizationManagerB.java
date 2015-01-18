@@ -15,17 +15,14 @@ package org.sonatype.security.authorization;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.sonatype.security.DefaultSecuritySystemTest;
 
-@Singleton
-@Typed(AuthorizationManager.class)
-@Named("sourceB")
+/**
+ * @see DefaultSecuritySystemTest
+ */
 public class MockAuthorizationManagerB
     extends AbstractReadOnlyAuthorizationManager
 {
-
   public String getSource() {
     return "sourceB";
   }
@@ -53,20 +50,15 @@ public class MockAuthorizationManagerB
     return roles;
   }
 
-  public Privilege getPrivilege(String privilegeId)
-      throws NoSuchPrivilegeException
-  {
+  public Privilege getPrivilege(String privilegeId) throws NoSuchPrivilegeException {
     return null;
   }
 
-  public Role getRole(String roleId)
-      throws NoSuchRoleException
-  {
+  public Role getRole(String roleId) throws NoSuchRoleException {
     return null;
   }
 
   public Set<Privilege> listPrivileges() {
     return null;
   }
-
 }
