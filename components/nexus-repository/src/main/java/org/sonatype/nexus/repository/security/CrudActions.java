@@ -10,26 +10,22 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-
-package org.sonatype.nexus.repository.simple.internal;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.sonatype.nexus.repository.security.MutableDynamicSecurityResource;
-import org.sonatype.security.realms.tools.DynamicSecurityResource;
+package org.sonatype.nexus.repository.security;
 
 /**
- * Simple format {@link DynamicSecurityResource}.
+ * Standard CRUD actions.
  *
  * @since 3.0
- *
- * @see SimpleSecurityFacet
  */
-@Named
-@Singleton
-public class SimpleDynamicSecurityResource
-    extends MutableDynamicSecurityResource
+public class CrudActions
 {
-  // empty
+  private CrudActions() {}
+
+  public static final String CREATE = "create";
+
+  public static final String READ = "read";
+
+  public static final String UPDATE = "update";
+
+  public static final String DELETE = "delete";
 }
