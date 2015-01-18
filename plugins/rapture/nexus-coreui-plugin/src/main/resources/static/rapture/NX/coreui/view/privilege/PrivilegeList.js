@@ -35,6 +35,10 @@ Ext.define('NX.coreui.view.privilege.PrivilegeList', {
       iconVariant: 'x16',
       iconNamePrefix: 'privilege-'
     },
+
+    // HACK: expose the privilege ID in the grid
+    { header: 'ID', dataIndex: 'id', flex: 1 },
+
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_NAME_COLUMN'), dataIndex: 'name', flex: 1 },
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_DESCRIPTION_COLUMN'), dataIndex: 'description', flex: 1 },
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_TYPE_COLUMN'), dataIndex: 'typeName', flex: 1 },
