@@ -15,10 +15,8 @@ package org.sonatype.security.realms;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.sonatype.security.usermanagement.RoleIdentifier;
 import org.sonatype.security.usermanagement.UserManager;
@@ -34,13 +32,12 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 
-@Singleton
-@Typed(Realm.class)
-@Named(MockRealm.NAME)
+/**
+ * @see ExternalRoleMappedTest
+ */
 public class MockRealm
     extends AuthorizingRealm
 {
@@ -68,14 +65,10 @@ public class MockRealm
     }
 
     return new SimpleAuthorizationInfo(roles);
-
   }
 
   @Override
-  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
-      throws AuthenticationException
-  {
-
+  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
     UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 
     String password = new String(upToken.getPassword());
@@ -100,5 +93,4 @@ public class MockRealm
   public String getName() {
     return "Mock";
   }
-
 }

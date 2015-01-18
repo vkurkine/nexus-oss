@@ -27,17 +27,26 @@ import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeD
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegeMethodPropertyDescriptor;
 import org.sonatype.security.realms.privileges.application.ApplicationPrivilegePermissionPropertyDescriptor;
 
+import com.google.inject.Binder;
+import com.google.inject.name.Names;
 import junit.framework.Assert;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 
 public class ExternalRoleMappedTest
     extends AbstractSecurityTestCase
 {
+  @Override
+  public void configure(final Binder binder) {
+    super.configure(binder);
 
-  public void testUserHasPermissionFromExternalRole()
-      throws Exception
-  {
+    binder.bind(Realm.class)
+        .annotatedWith(Names.named("Mock"))
+        .to(MockRealm.class);
+  }
+
+  public void testUserHasPermissionFromExternalRole() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
 
     Map<String, String> properties = new HashMap<String, String>();
@@ -50,6 +59,7 @@ public class ExternalRoleMappedTest
         "permissionOne",
         ApplicationPrivilegeDescriptor.TYPE,
         properties, false));
+
     securitySystem.getAuthorizationManager("default").addRole(new Role("mockrole1", "mockrole1", "mockrole1",
         "default", false, null,
         Collections.singleton("randomId")));
@@ -74,6 +84,5 @@ public class ExternalRoleMappedTest
     }
 
     securitySystem.checkPermission(jcohen, "permissionOne:read"); // throws on error, so this is all we need to do
-
   }
 }
