@@ -38,6 +38,10 @@ Ext.define('NX.coreui.view.privilege.PrivilegeList', {
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_NAME_COLUMN'), dataIndex: 'name', flex: 1 },
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_DESCRIPTION_COLUMN'), dataIndex: 'description', flex: 1 },
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_TYPE_COLUMN'), dataIndex: 'typeName', flex: 1 },
+
+    // HACK: expose the real shiro permission string
+    { header: 'Real Permission', dataIndex: 'realPermission', flex: 1 },
+
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_TARGET_COLUMN'), dataIndex: 'repositoryTargetName', flex: 1 },
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_REPOSITORY_COLUMN'), dataIndex: 'repositoryName', flex: 1 },
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_METHOD_COLUMN'), dataIndex: 'method', flex: 1 }
