@@ -25,7 +25,6 @@ Ext.define('NX.coreui.view.ldap.LdapServerAdd', {
     'NX.I18n'
   ],
 
-  title: NX.I18n.get('ADMIN_LDAP_CREATE_TITLE'),
   defaultFocus: 'name',
 
   /**
@@ -45,14 +44,33 @@ Ext.define('NX.coreui.view.ldap.LdapServerAdd', {
       editableCondition: NX.Conditions.isPermitted('security:ldapconfig', 'create'),
           editableMarker: NX.I18n.get('ADMIN_LDAP_CREATE_ERROR'),
           items: {
-        xtype: 'tabpanel',
-            ui: 'light',
+            xtype: 'tabpanel',
+            ui: 'nx-light',
             items: [
-          { xtype: 'nx-coreui-ldapserver-connection-fieldset', title: NX.I18n.get('ADMIN_LDAP_DETAILS_CONNECTION_TAB') },
-          { xtype: 'nx-coreui-ldapserver-backup-fieldset', title: NX.I18n.get('ADMIN_LDAP_DETAILS_BACKUP_TAB') },
-          { xtype: 'nx-coreui-ldapserver-userandgroup-fieldset', title: NX.I18n.get('ADMIN_LDAP_DETAILS_GROUP_TAB') }
-        ]
-      }
+              {
+                xtype: 'nx-coreui-ldapserver-connection-fieldset',
+                title: NX.I18n.get('ADMIN_LDAP_DETAILS_CONNECTION_TAB'),
+                ui: 'nx-inset'
+              },
+              {
+                xtype: 'nx-coreui-ldapserver-backup-fieldset',
+                title: NX.I18n.get('ADMIN_LDAP_DETAILS_BACKUP_TAB'),
+                ui: 'nx-inset'
+              },
+              {
+                xtype: 'nx-coreui-ldapserver-userandgroup-fieldset',
+                title: NX.I18n.get('ADMIN_LDAP_DETAILS_GROUP_TAB'),
+                ui: 'nx-inset'
+              }
+            ]
+      },
+
+      buttons: [
+        { text: NX.I18n.get('ADMIN_LDAP_LIST_NEW_BUTTON'), action: 'add', formBind: true, ui: 'nx-primary' },
+        { text: NX.I18n.get('GLOBAL_DIALOG_ADD_CANCEL_BUTTON'), handler: function () {
+          this.up('nx-drilldown').showChild(0, true);
+        }}
+      ]
     };
 
     me.callParent(arguments);

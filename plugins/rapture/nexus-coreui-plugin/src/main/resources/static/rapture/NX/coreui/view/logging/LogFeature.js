@@ -10,46 +10,23 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-/*global Ext*/
+/*global Ext, NX*/
 
 /**
- * Abstract add window.
+ * Capability feature panel.
  *
  * @since 3.0
  */
-Ext.define('NX.view.AddWindow', {
-  extend: 'Ext.panel.Panel',
-  alias: 'widget.nx-addwindow',
+Ext.define('NX.coreui.view.logging.LogFeature', {
+  extend: 'NX.view.drilldown.Drilldown',
+  alias: 'widget.nx-coreui-log-feature',
   requires: [
     'NX.I18n'
   ],
 
-  layout: {
-    type: 'vbox',
-    align: 'stretch',
-    pack: 'start'
-  },
+  iconName: 'feature-admin-support-logging-logviewer',
 
-  autoScroll: true,
+  detail: { xtype: 'nx-coreui-log-viewer' },
 
-  /**
-   * @override
-   */
-  initComponent: function () {
-    var me = this;
-
-    if (Ext.isDefined(me.items) && !Ext.isArray(me.items)) {
-      if (!me.items.buttons) {
-        me.items.buttons = [
-          { text: NX.I18n.get('GLOBAL_DIALOG_ADD_SUBMIT_BUTTON'), action: 'add', formBind: true, ui: 'nx-primary', bindToEnter:  me.items.settingsFormSubmitOnEnter },
-          { text: NX.I18n.get('GLOBAL_DIALOG_ADD_CANCEL_BUTTON'), handler: function () {
-            this.up('nx-drilldown').showChild(0, true);
-          }}
-        ];
-      }
-    }
-
-    me.callParent(arguments);
-  }
-
+  createWizard: { xtype: 'nx-coreui-log-mark' }
 });

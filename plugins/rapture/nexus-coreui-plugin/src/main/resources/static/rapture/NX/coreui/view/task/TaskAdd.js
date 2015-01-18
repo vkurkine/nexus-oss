@@ -25,8 +25,6 @@ Ext.define('NX.coreui.view.task.TaskAdd', {
     'NX.I18n'
   ],
 
-  title: NX.I18n.get('ADMIN_TASKS_CREATE_TITLE'),
-
   /**
    * @override
    */
@@ -43,13 +41,20 @@ Ext.define('NX.coreui.view.task.TaskAdd', {
       },
       editableCondition: NX.Conditions.isPermitted('nexus:tasks', 'create'),
       editableMarker: NX.I18n.get('ADMIN_TASKS_CREATE_ERROR'),
+      buttons: [
+        { text: NX.I18n.get('ADMIN_TASKS_LIST_NEW_BUTTON'), action: 'add', formBind: true, ui: 'nx-primary' },
+        { text: NX.I18n.get('GLOBAL_DIALOG_ADD_CANCEL_BUTTON'), handler: function () {
+          this.up('nx-drilldown').showChild(0, true);
+        }}
+      ],
       items: {
         xtype: 'tabpanel',
-        ui: 'light',
+        ui: 'nx-light',
         items: [
           {
             xtype: 'panel',
             title: 'Settings',
+            ui: 'nx-inset',
             defaults: {
               xtype: 'textfield',
               allowBlank: false
@@ -95,6 +100,7 @@ Ext.define('NX.coreui.view.task.TaskAdd', {
           {
             xtype: 'panel',
             title: NX.I18n.get('ADMIN_TASKS_CREATE_SCHEDULE'),
+            ui: 'nx-inset',
             items: { xtype: 'nx-coreui-task-schedulefieldset' }
           }
         ]

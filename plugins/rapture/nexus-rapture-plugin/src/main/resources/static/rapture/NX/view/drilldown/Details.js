@@ -42,7 +42,7 @@ Ext.define('NX.view.drilldown.Details', {
       {
         xtype: 'panel',
         itemId: 'info',
-        ui: 'drilldown-message',
+        ui: 'nx-drilldown-message',
         cls: 'nx-drilldown-info',
         iconCls: NX.Icons.cls('drilldown-info', 'x16'),
         hidden: true
@@ -50,20 +50,19 @@ Ext.define('NX.view.drilldown.Details', {
       {
         xtype: 'panel',
         itemId: 'warning',
-        ui: 'drilldown-message',
+        ui: 'nx-drilldown-message',
         cls: 'nx-drilldown-warning',
         iconCls: NX.Icons.cls('drilldown-warning', 'x16'),
         hidden: true
       },
       {
         xtype: 'nx-drilldown-actions',
-        items: me.actions,
-        hidden: (me.actions ? false : true)
+        items: me.actions
       },
       {
         xtype: 'nx-sorted-tabpanel',
         itemId: 'tab',
-        ui: 'light',
+        ui: 'nx-light',
         activeTab: 0,
         layoutOnTabChange: true,
         flex: 1,
