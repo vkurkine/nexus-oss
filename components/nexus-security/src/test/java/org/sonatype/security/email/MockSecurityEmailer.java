@@ -14,10 +14,12 @@ package org.sonatype.security.email;
 
 import java.util.List;
 
-public class MockEmailer
+/**
+ * Mock {@link SecurityEmailer}.
+ */
+public class MockSecurityEmailer
     implements SecurityEmailer
 {
-
   public List<String> forgotUserIds;
 
   public void sendForgotUsername(String email, List<String> userIds) {
@@ -25,13 +27,14 @@ public class MockEmailer
   }
 
   public void sendNewUserCreated(String email, String userid, String password) {
+    // empty
   }
 
   public void sendResetPassword(String email, String password) {
+    // empty
   }
 
   public List<String> getForgotUserIds() {
     return forgotUserIds;
   }
-
 }

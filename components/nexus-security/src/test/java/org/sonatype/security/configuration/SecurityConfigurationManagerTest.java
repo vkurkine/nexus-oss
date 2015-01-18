@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.sonatype.security.SecurityTestSupport;
-import org.sonatype.sisu.litmus.testsupport.TestUtil;
 
 import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
@@ -27,11 +26,12 @@ import org.eclipse.sisu.space.BeanScanning;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
+/**
+ * Tests for {@link SecurityConfigurationManager}.
+ */
 public class SecurityConfigurationManagerTest
     extends SecurityTestSupport
 {
-  private final TestUtil util = new TestUtil(this);
-
   // FIXME: Upgrade to junit4
 
   private File PLEXUS_HOME = util.createTempDir("plexus-home");

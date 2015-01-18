@@ -22,7 +22,7 @@ import junit.framework.Assert;
 public class EmailerTest
     extends AbstractSecurityTest
 {
-  private MockEmailer emailer = new MockEmailer();
+  private MockSecurityEmailer emailer = new MockSecurityEmailer();
 
   @Override
   public void configure(Binder binder) {
@@ -30,20 +30,16 @@ public class EmailerTest
     binder.bind(SecurityEmailer.class).toInstance(emailer);
   }
 
-  public void testForgotUsername()
-      throws Exception
-  {
+  public void testForgotUsername() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
 
     securitySystem.forgotUsername("cdugas@sonatype.org");
 
-    Assert.assertTrue(((MockEmailer) emailer).getForgotUserIds().contains("cdugas"));
-    Assert.assertEquals(1, ((MockEmailer) emailer).getForgotUserIds().size());
+    Assert.assertTrue(emailer.getForgotUserIds().contains("cdugas"));
+    Assert.assertEquals(1, emailer.getForgotUserIds().size());
   }
 
-  public void testDoNotRecoverAnonUserName()
-      throws Exception
-  {
+  public void testDoNotRecoverAnonUserName() throws Exception {
     SecuritySystem securitySystem = this.lookup(SecuritySystem.class);
 
     try {
