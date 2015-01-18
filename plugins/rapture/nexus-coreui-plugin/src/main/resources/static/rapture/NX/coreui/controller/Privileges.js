@@ -114,6 +114,10 @@ Ext.define('NX.coreui.controller.Privileges', {
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_NAME')] = model.get('name');
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_DESCRIPTION')] = model.get('description');
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_METHOD')] = model.get('method');
+
+      // HACK: expose the real shiro permission string
+      info['Real Permission'] = model.get('realPermission');
+
       if (model.get('permission')) {
         info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_PERMISSION')] = model.get('permission');
       }

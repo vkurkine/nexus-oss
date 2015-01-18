@@ -141,19 +141,27 @@ extends DirectComponentSupport
   }
 
   def PrivilegeXO asPrivilegeXO(Privilege input) {
+    def descriptor = privilegeDescriptors.findResult { PrivilegeDescriptor it ->
+      return it.type == input.type ? it : null
+    }
+
     def privilege = new PrivilegeXO(
         id: input.id,
         version: input.version,
         name: input.name,
         description: input.description,
         type: input.type,
-        typeName: privilegeDescriptors.findResult { PrivilegeDescriptor descriptor ->
-          return descriptor.type == input.type ? descriptor : null
-        }?.name,
+        typeName: descriptor?.name,
         readOnly: input.readOnly,
+
+        // HACK: expose the real shiro permission string
+        realPermission: input.permission,
+
+        // FIXME: Should just expose the properties asis, and let UI figure out how to render
         method: input.getPrivilegeProperty('method'),
         permission: input.getPrivilegeProperty('permission')
     )
+
     input.properties.each { key, value ->
       if (key == 'repositoryTargetId') {
         privilege.repositoryTargetId = value

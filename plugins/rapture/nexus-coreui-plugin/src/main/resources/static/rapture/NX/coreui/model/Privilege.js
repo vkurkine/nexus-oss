@@ -27,6 +27,11 @@ Ext.define('NX.coreui.model.Privilege', {
     'type',
     'typeName',
     'readOnly',
+
+    // HACK: expose the real shiro permission string
+    'realPermission',
+
+    // FIXME: Should just expose the properties asis, and let UI figure out how to render
     'method',
     'permission',
     'repositoryId',

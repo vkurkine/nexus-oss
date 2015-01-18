@@ -34,6 +34,11 @@ class PrivilegeXO
   String type
   String typeName
   Boolean readOnly
+
+  // HACK: expose the real shiro permission string
+  String realPermission
+
+  // FIXME: Should just expose the properties asis, and let UI figure out how to render
   String method
   String permission
   String repositoryId
