@@ -32,7 +32,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
-// FIXME: resolve with other UserManagerTest (in org.sonatype.security.locators)
+// FIXME: resolve with other UserManager2Test
 
 public class UserManagerTest
     extends AbstractSecurityTestCase

@@ -21,7 +21,7 @@ import org.sonatype.security.model.Configuration;
 
 import junit.framework.Assert;
 
-// FIXME: resolve with other UserManagerTest (in org.sonatype.security.usermanagement)
+// FIXME: resolve with other UserManagerTest
 
 /**
  * Tests for {@link UserManager}.
