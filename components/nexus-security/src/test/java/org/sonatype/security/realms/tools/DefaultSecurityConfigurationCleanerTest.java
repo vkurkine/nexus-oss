@@ -12,45 +12,50 @@
  */
 package org.sonatype.security.realms.tools;
 
-import org.sonatype.security.AbstractSecurityTestCase;
 import org.sonatype.security.model.CRole;
 import org.sonatype.security.model.CUserRoleMapping;
 import org.sonatype.security.model.Configuration;
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+
+/**
+ * Tests for {@link DefaultSecurityConfigurationCleaner}.
+ */
 public class DefaultSecurityConfigurationCleanerTest
-    extends AbstractSecurityTestCase
+    extends TestSupport
 {
-  private DefaultSecurityConfigurationCleaner cleaner;
+  private DefaultSecurityConfigurationCleaner underTest;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  private Configuration configuration;
 
-    cleaner = (DefaultSecurityConfigurationCleaner) lookup(SecurityConfigurationCleaner.class);
+  @Before
+  public void setUp() throws Exception {
+    underTest = new DefaultSecurityConfigurationCleaner();
+    configuration = DefaultSecurityConfigurationCleanerTestSecurity.securityModel();
   }
 
+  @Test
   public void testRemovePrivilege() throws Exception {
-    Configuration configuration = DefaultSecurityConfigurationCleanerTestSecurity.securityModel();
-
     String privilegeId = configuration.getPrivileges().get(0).getId();
-
     configuration.removePrivilege(privilegeId);
 
-    cleaner.privilegeRemoved(configuration, privilegeId);
+    underTest.privilegeRemoved(configuration, privilegeId);
 
     for (CRole role : configuration.getRoles()) {
       assertFalse(role.getPrivileges().contains(privilegeId));
     }
   }
 
+  @Test
   public void testRemoveRole() throws Exception {
-    Configuration configuration = DefaultSecurityConfigurationCleanerTestSecurity.securityModel();
-
     String roleId = configuration.getRoles().get(0).getId();
-
     configuration.removeRole(roleId);
 
-    cleaner.roleRemoved(configuration, roleId);
+    underTest.roleRemoved(configuration, roleId);
 
     for (CRole crole : configuration.getRoles()) {
       assertFalse(crole.getPrivileges().contains(roleId));
