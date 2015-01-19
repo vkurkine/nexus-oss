@@ -36,10 +36,9 @@ Ext.define('NX.coreui.view.privilege.PrivilegeList', {
       iconNamePrefix: 'privilege-'
     },
 
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_ID_COLUMN'), dataIndex: 'id', flex: 2 },
+    // NOTE: Not including ID here as for user-created privileges these are random strings
 
-    // TODO: Remove name?
-    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_NAME_COLUMN'), dataIndex: 'name', flex: 1, hidden: true },
+    { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_NAME_COLUMN'), dataIndex: 'name', flex: 2 },
 
     { header: NX.I18n.get('ADMIN_PRIVILEGES_LIST_DESCRIPTION_COLUMN'), dataIndex: 'description', flex: 4 },
 

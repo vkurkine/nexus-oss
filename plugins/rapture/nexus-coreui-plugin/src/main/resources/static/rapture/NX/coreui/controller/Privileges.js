@@ -105,7 +105,6 @@ Ext.define('NX.coreui.controller.Privileges', {
    * @override
    */
   getDescription: function (model) {
-    // TODO: Sort out name and id
     return model.get('name');
   },
 
@@ -116,13 +115,14 @@ Ext.define('NX.coreui.controller.Privileges', {
     if (Ext.isDefined(model)) {
       me.getFeature().setItemClass(1, NX.Icons.cls('privilege-' + model.get('type'), 'x16'));
 
-      // TODO: Sort out name and id
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_ID')] = model.getId();
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_NAME')] = model.get('name');
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_DESCRIPTION')] = model.get('description');
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_PERMISSION')] = model.get('permission');
 
-      // TODO: Add model.properties
+      Ext.iterate(model.get('properties'), function(key, value) {
+        info[NX.I18n.format('ADMIN_PRIVILEGES_SUMMARY_PROPERTY', key)] = value;
+      });
 
       me.getInfo().showInfo(info);
     }
@@ -192,8 +192,7 @@ Ext.define('NX.coreui.controller.Privileges', {
       me.loadStoreAndSelect(action.result.data[0].id, false);
       Ext.Array.each(action.result.data, function (privilege) {
         NX.Messages.add({
-          // FIXME: Add string def
-          text: 'Privilege created: ' + privilege.name,
+          text: NX.I18n.format('ADMIN_PRIVILEGES_MESSAGE_CREATED', privilege.name),
           type: 'success'
         });
       });
@@ -209,7 +208,6 @@ Ext.define('NX.coreui.controller.Privileges', {
    * @param model privilege to be deleted
    */
   deleteModel: function (model) {
-    // TODO: Sort out name and id
     var me = this,
         name = model.get('name');
 
@@ -217,8 +215,8 @@ Ext.define('NX.coreui.controller.Privileges', {
       me.loadStore();
       if (Ext.isObject(response) && response.success) {
         NX.Messages.add({
-          // FIXME: Add string def
-          text: 'Privilege deleted: ' + name, type: 'success'
+          text: NX.I18n.format('ADMIN_PRIVILEGES_MESSAGE_DELETED', name),
+          type: 'success'
         });
       }
     });

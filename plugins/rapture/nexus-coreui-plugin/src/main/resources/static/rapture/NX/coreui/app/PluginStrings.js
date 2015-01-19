@@ -364,7 +364,6 @@ Ext.define('NX.coreui.app.PluginStrings', {
     ADMIN_PRIVILEGES_LIST_DESCRIPTION_COLUMN: 'Description',
     ADMIN_PRIVILEGES_LIST_TYPE_COLUMN: 'Type',
     ADMIN_PRIVILEGES_LIST_PERMISSION_COLUMN: 'Permission',
-
     ADMIN_PRIVILEGES_LIST_EMPTY_STATE: 'No privileges defined',
     ADMIN_PRIVILEGES_LIST_FILTER_ERROR: 'No privileges matched "$filter"',
     ADMIN_PRIVILEGES_DETAILS_DELETE_BUTTON: 'Delete privilege',
@@ -372,6 +371,9 @@ Ext.define('NX.coreui.app.PluginStrings', {
     ADMIN_PRIVILEGES_SUMMARY_NAME: 'Name',
     ADMIN_PRIVILEGES_SUMMARY_DESCRIPTION: 'Description',
     ADMIN_PRIVILEGES_SUMMARY_PERMISSION: 'Permission',
+    ADMIN_PRIVILEGES_SUMMARY_PROPERTY: 'Property-{0}',
+    ADMIN_PRIVILEGES_MESSAGE_CREATED: 'Privilege created: {0}',
+    ADMIN_PRIVILEGES_MESSAGE_DELETED: 'Privilege deleted: {0}',
 
     // Admin -> Security -> Roles
     ADMIN_ROLES_TITLE: 'Roles',
