@@ -109,15 +109,15 @@ public class DefaultSecuritySystem
   private volatile boolean started;
 
   @Inject
-  public DefaultSecuritySystem(List<SecurityEmailer> securityEmailers,
-                               EventBus eventBus,
-                               PasswordGenerator passwordGenerator,
-                               Map<String, AuthorizationManager> authorizationManagers,
-                               Map<String, Realm> realmMap,
-                               SecurityConfigurationManager securityConfiguration,
-                               RealmSecurityManager securityManager,
-                               CacheManager cacheManager,
-                               Map<String, UserManager> userManagers)
+  public DefaultSecuritySystem(final List<SecurityEmailer> securityEmailers,
+                               final EventBus eventBus,
+                               final PasswordGenerator passwordGenerator,
+                               final Map<String, AuthorizationManager> authorizationManagers,
+                               final Map<String, Realm> realmMap,
+                               final SecurityConfigurationManager securityConfiguration,
+                               final RealmSecurityManager securityManager,
+                               final CacheManager cacheManager,
+                               final Map<String, UserManager> userManagers)
   {
     this.securityEmailers = securityEmailers;
     this.eventBus = eventBus;
