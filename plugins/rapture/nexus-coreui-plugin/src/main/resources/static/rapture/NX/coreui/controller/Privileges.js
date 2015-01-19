@@ -92,15 +92,20 @@ Ext.define('NX.coreui.controller.Privileges', {
         },
         'nx-coreui-privilege-add-repositorytarget form': {
           submitted: me.onSettingsSubmitted
-        },
-        'nx-coreui-privilege-add-repositorytarget #repositoryId': {
-          change: me.filterRepositoryTargets
         }
+        // FIXME: What does this do?
+        //'nx-coreui-privilege-add-repositorytarget #repositoryId': {
+        //  change: me.filterRepositoryTargets
+        //}
       }
     });
   },
 
+  /**
+   * @override
+   */
   getDescription: function (model) {
+    // TODO: Sort out name and id
     return model.get('name');
   },
 
@@ -110,23 +115,14 @@ Ext.define('NX.coreui.controller.Privileges', {
 
     if (Ext.isDefined(model)) {
       me.getFeature().setItemClass(1, NX.Icons.cls('privilege-' + model.get('type'), 'x16'));
+
+      // TODO: Sort out name and id
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_ID')] = model.getId();
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_NAME')] = model.get('name');
       info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_DESCRIPTION')] = model.get('description');
-      info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_METHOD')] = model.get('method');
+      info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_PERMISSION')] = model.get('permission');
 
-      // HACK: expose the real shiro permission string
-      info['Real Permission'] = model.get('realPermission');
-
-      if (model.get('permission')) {
-        info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_PERMISSION')] = model.get('permission');
-      }
-      if (model.get('repositoryTargetName')) {
-        info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_TARGET')] = model.get('repositoryTargetName');
-      }
-      if (model.get('repositoryName')) {
-        info[NX.I18n.get('ADMIN_PRIVILEGES_SUMMARY_REPOSITORY')] = model.get('repositoryName');
-      }
+      // TODO: Add model.properties
 
       me.getInfo().showInfo(info);
     }
@@ -144,23 +140,24 @@ Ext.define('NX.coreui.controller.Privileges', {
     me.loadCreateWizard(1, true, null);
   },
 
-  /**
-   * @private
-   */
-  filterRepositoryTargets: function (repositoryIdCombo) {
-    var targetCombo = repositoryIdCombo.up('form').down('#repositoryTargetId'),
-        repositoryId = repositoryIdCombo.getValue(),
-        format;
-
-    targetCombo.setValue(undefined);
-    if (repositoryId) {
-      format = repositoryIdCombo.getStore().getById(repositoryId).get('format');
-      targetCombo.getStore().filterByFormat(format);
-    }
-    else {
-      targetCombo.getStore().removeFilterByFormat();
-    }
-  },
+  // FIXME: What does this do?
+  ///**
+  //* @private
+  //*/
+  //filterRepositoryTargets: function (repositoryIdCombo) {
+  //  var targetCombo = repositoryIdCombo.up('form').down('#repositoryTargetId'),
+  //      repositoryId = repositoryIdCombo.getValue(),
+  //      format;
+  //
+  //  targetCombo.setValue(undefined);
+  //  if (repositoryId) {
+  //    format = repositoryIdCombo.getStore().getById(repositoryId).get('format');
+  //    targetCombo.getStore().filterByFormat(format);
+  //  }
+  //  else {
+  //    targetCombo.getStore().removeFilterByFormat();
+  //  }
+  //},
 
   /**
    * @protected
@@ -195,6 +192,7 @@ Ext.define('NX.coreui.controller.Privileges', {
       me.loadStoreAndSelect(action.result.data[0].id, false);
       Ext.Array.each(action.result.data, function (privilege) {
         NX.Messages.add({
+          // FIXME: Add string def
           text: 'Privilege created: ' + privilege.name,
           type: 'success'
         });
@@ -211,14 +209,16 @@ Ext.define('NX.coreui.controller.Privileges', {
    * @param model privilege to be deleted
    */
   deleteModel: function (model) {
+    // TODO: Sort out name and id
     var me = this,
-        description = me.getDescription(model);
+        name = model.get('name');
 
     NX.direct.coreui_Privilege.remove(model.getId(), function (response) {
       me.loadStore();
       if (Ext.isObject(response) && response.success) {
         NX.Messages.add({
-          text: 'Privilege deleted: ' + description, type: 'success'
+          // FIXME: Add string def
+          text: 'Privilege deleted: ' + name, type: 'success'
         });
       }
     });

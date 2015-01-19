@@ -29,20 +29,16 @@ class PrivilegeXO
   @NotEmpty(groups = Update)
   String version
 
+  // TODO: Should we remove this?
   String name
+
   String description
+
   String type
-  String typeName
+
   Boolean readOnly
 
-  // HACK: expose the real shiro permission string
-  String realPermission
+  Map<String,String> properties
 
-  // FIXME: Should just expose the properties asis, and let UI figure out how to render
-  String method
   String permission
-  String repositoryId
-  String repositoryName
-  String repositoryTargetId
-  String repositoryTargetName
 }

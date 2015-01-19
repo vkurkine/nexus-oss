@@ -28,6 +28,7 @@ public class Privilege
    */
   private String id;
 
+  // TODO: Remove name?
   /**
    * Field name
    */
