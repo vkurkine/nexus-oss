@@ -208,14 +208,13 @@ Ext.define('NX.coreui.controller.Privileges', {
    * @param model privilege to be deleted
    */
   deleteModel: function (model) {
-    var me = this,
-        name = model.get('name');
+    var me = this;
 
     NX.direct.coreui_Privilege.remove(model.getId(), function (response) {
       me.loadStore();
       if (Ext.isObject(response) && response.success) {
         NX.Messages.add({
-          text: NX.I18n.format('ADMIN_PRIVILEGES_MESSAGE_DELETED', name),
+          text: NX.I18n.format('ADMIN_PRIVILEGES_MESSAGE_DELETED', model.get('name')),
           type: 'success'
         });
       }
