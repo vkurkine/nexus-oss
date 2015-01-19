@@ -346,8 +346,7 @@ public interface SecuritySystem
    * Sets the name of the anonymous users. Could be something other then 'anonymous', for example Active Directory
    * uses 'Guest' TODO: consider removing this method.
    */
-  void setAnonymousUsername(String anonymousUsername)
-      throws InvalidConfigurationException;
+  void setAnonymousUsername(String anonymousUsername) throws InvalidConfigurationException;
 
   /**
    * Gets the anonymous user password.
