@@ -12,25 +12,26 @@
  */
 package org.sonatype.security.realms.tools;
 
-import org.sonatype.security.AbstractSecurityTestCase;
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
 
-import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.crypto.hash.Hash;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * Tests for {@link DefaultSecurityPasswordService}.
+ */
 public class DefaultSecurityPasswordServiceTest
-    extends AbstractSecurityTestCase
+    extends TestSupport
 {
-  DefaultSecurityPasswordService passwordService;
+  private DefaultSecurityPasswordService underTest;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    this.passwordService = (DefaultSecurityPasswordService) lookup(PasswordService.class, "default");
+  @Before
+  public void setUp() throws Exception {
+    underTest = new DefaultSecurityPasswordService(new LegacyNexusPasswordService());
   }
 
   @Test
@@ -38,7 +39,7 @@ public class DefaultSecurityPasswordServiceTest
     String password = "admin123";
     String sha1Hash = "f865b53623b121fd34ee5426c792e5c33af8c227";
 
-    assertThat(this.passwordService.passwordsMatch(password, sha1Hash), is(true));
+    assertThat(this.underTest.passwordsMatch(password, sha1Hash), is(true));
   }
 
   @Test
@@ -46,7 +47,7 @@ public class DefaultSecurityPasswordServiceTest
     String password = "admin123";
     String md5Hash = "0192023a7bbd73250516f069df18b500";
 
-    assertThat(this.passwordService.passwordsMatch(password, md5Hash), is(true));
+    assertThat(this.underTest.passwordsMatch(password, md5Hash), is(true));
   }
 
   @Test
@@ -54,7 +55,7 @@ public class DefaultSecurityPasswordServiceTest
     String password = "admin123";
     String shiro1Hash = "$shiro1$SHA-512$1024$zjU1u+Zg9UNwuB+HEawvtA==$IzF/OWzJxrqvB5FCe/2+UcZhhZYM2pTu0TEz7Ybnk65AbbEdUk9ntdtBzkN8P3gZby2qz6MHKqAe8Cjai9c4Gg==";
 
-    assertThat(this.passwordService.passwordsMatch(password, shiro1Hash), is(true));
+    assertThat(this.underTest.passwordsMatch(password, shiro1Hash), is(true));
   }
 
   @Test
@@ -62,7 +63,7 @@ public class DefaultSecurityPasswordServiceTest
     String password = "admin123";
     String sha1Hash = "f865b53623b121fd34ee5426c792e5c33af8c228";
 
-    assertThat(this.passwordService.passwordsMatch(password, sha1Hash), is(false));
+    assertThat(this.underTest.passwordsMatch(password, sha1Hash), is(false));
   }
 
   @Test
@@ -70,7 +71,7 @@ public class DefaultSecurityPasswordServiceTest
     String password = "admin123";
     String md5Hash = "0192023a7bbd73250516f069df18b501";
 
-    assertThat(this.passwordService.passwordsMatch(password, md5Hash), is(false));
+    assertThat(this.underTest.passwordsMatch(password, md5Hash), is(false));
   }
 
   @Test
@@ -78,14 +79,14 @@ public class DefaultSecurityPasswordServiceTest
     String password = "admin123";
     String shiro1Hash = "$shiro1$SHA-512$1024$zjU1u+Zg9UNwuB+HEawvtA==$IzF/OWzjxrqvB5FCe/2+UcZhhZYM2pTu0TEz7Ybnk65AbbEdUk9ntdtBzkN8P3gZby2qz6MHKqAe8Cjai9c4Gg==";
 
-    assertThat(this.passwordService.passwordsMatch(password, shiro1Hash), is(false));
+    assertThat(this.underTest.passwordsMatch(password, shiro1Hash), is(false));
   }
 
   @Test
   public void testHash() {
     String password = "testpassword";
-    Hash hash = this.passwordService.hashPassword(password);
+    Hash hash = this.underTest.hashPassword(password);
 
-    assertThat(this.passwordService.passwordsMatch(password, hash), is(true));
+    assertThat(this.underTest.passwordsMatch(password, hash), is(true));
   }
 }

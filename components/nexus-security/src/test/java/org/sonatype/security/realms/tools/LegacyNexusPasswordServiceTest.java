@@ -12,25 +12,25 @@
  */
 package org.sonatype.security.realms.tools;
 
-import org.apache.shiro.authc.credential.PasswordService;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.sonatype.sisu.litmus.testsupport.TestSupport;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * Tests for {@link LegacyNexusPasswordService}.
+ */
 public class LegacyNexusPasswordServiceTest
-    extends InjectedTestCase
+    extends TestSupport
 {
-  // FIXME: Convert to junit4
+  private LegacyNexusPasswordService underTest;
 
-  LegacyNexusPasswordService passwordService;
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    this.passwordService = (LegacyNexusPasswordService) lookup(PasswordService.class, "legacy");
+  @Before
+  public void setUp() throws Exception {
+    underTest = new LegacyNexusPasswordService();
   }
 
   @Test
@@ -38,7 +38,7 @@ public class LegacyNexusPasswordServiceTest
     String password = "admin123";
     String sha1Hash = "f865b53623b121fd34ee5426c792e5c33af8c227";
 
-    assertThat(this.passwordService.passwordsMatch(password, sha1Hash), is(true));
+    assertThat(this.underTest.passwordsMatch(password, sha1Hash), is(true));
   }
 
   @Test
@@ -46,7 +46,7 @@ public class LegacyNexusPasswordServiceTest
     String password = "admin123";
     String md5Hash = "0192023a7bbd73250516f069df18b500";
 
-    assertThat(this.passwordService.passwordsMatch(password, md5Hash), is(true));
+    assertThat(this.underTest.passwordsMatch(password, md5Hash), is(true));
   }
 
   @Test
@@ -54,7 +54,7 @@ public class LegacyNexusPasswordServiceTest
     String password = "admin123";
     String sha1Hash = "f865b53623b121fd34ee5426c792e5c33af8c228";
 
-    assertThat(this.passwordService.passwordsMatch(password, sha1Hash), is(false));
+    assertThat(this.underTest.passwordsMatch(password, sha1Hash), is(false));
   }
 
   @Test
@@ -62,6 +62,6 @@ public class LegacyNexusPasswordServiceTest
     String password = "admin123";
     String md5Hash = "0192023a7bbd73250516f069df18b501";
 
-    assertThat(this.passwordService.passwordsMatch(password, md5Hash), is(false));
+    assertThat(this.underTest.passwordsMatch(password, md5Hash), is(false));
   }
 }
