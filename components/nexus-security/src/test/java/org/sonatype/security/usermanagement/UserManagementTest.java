@@ -67,8 +67,6 @@ public class UserManagementTest
     Assert.assertTrue(userMap.containsKey("jblevins"));
     Assert.assertTrue(userMap.containsKey("ksimmons"));
     Assert.assertTrue(userMap.containsKey("fdahmen"));
-
-    // FIXME: This is a wasted assertion
     Assert.assertTrue(userMap.containsKey("jcodar"));
 
     // FIXME: This is a pretty fragile assertion
