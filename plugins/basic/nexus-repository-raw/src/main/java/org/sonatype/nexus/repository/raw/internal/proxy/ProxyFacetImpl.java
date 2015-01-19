@@ -30,6 +30,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
+import org.joda.time.DateTime;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -44,6 +45,8 @@ public class ProxyFacetImpl
 
   private URI remoteUrl;
 
+  private int artifactMaxAgeMinutes;
+
   private HttpClientFacet httpClient;
 
   private PayloadStorage localStorage;
@@ -57,6 +60,9 @@ public class ProxyFacetImpl
     }
     this.remoteUrl = new URI(url);
     log.debug("Remote URL: {}", remoteUrl);
+
+    artifactMaxAgeMinutes = attributes.require("artifactMaxAge", Integer.class);
+    log.debug("Artifact max age: {}", artifactMaxAgeMinutes);
   }
 
   @Override
@@ -128,6 +134,19 @@ public class ProxyFacetImpl
   }
 
   private boolean isStale(Payload payload) {
-    throw new IllegalStateException("not implemented");
+    if (artifactMaxAgeMinutes < 0) {
+      log.trace("Artifact max age checking disabled.");
+      return false;
+    }
+
+    final DateTime lastModified = payload.getLastModified();
+
+    if (lastModified == null) {
+      log.debug("Artifact last modified date unknown.");
+      return false;
+    }
+
+    final DateTime earliestFreshDate = new DateTime().minusMinutes(artifactMaxAgeMinutes);
+    return lastModified.isBefore(earliestFreshDate);
   }
 }
