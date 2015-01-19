@@ -29,7 +29,6 @@ class PrivilegeXO
   @NotEmpty(groups = Update)
   String version
 
-  // TODO: Should we remove this?
   String name
 
   String description

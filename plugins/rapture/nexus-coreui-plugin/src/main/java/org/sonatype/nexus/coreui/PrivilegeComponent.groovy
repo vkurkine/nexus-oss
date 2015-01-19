@@ -147,7 +147,6 @@ extends DirectComponentSupport
     return new PrivilegeXO(
         id: input.id,
         version: input.version,
-        // TODO: Should we remove this?
         name: input.name,
         description: input.description,
         type: input.type,

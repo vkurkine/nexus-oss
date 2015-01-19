@@ -36,7 +36,6 @@ public class CPrivilege
    */
   private String id;
 
-  // TODO: Remove name?
   /**
    * A descriptive name for the privilege.
    */

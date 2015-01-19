@@ -22,7 +22,6 @@ Ext.define('NX.coreui.model.Privilege', {
   fields: [
     'id',
     'version',
-    // TODO: Remove name?
     'name',
     'description',
     'type',
