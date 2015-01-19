@@ -63,7 +63,6 @@ Ext.define('NX.app.PluginStrings', {
     GLOBAL_SIGN_IN_TITLE: 'Sign In',
     GLOBAL_SIGN_IN_USERNAME_PLACEHOLDER: 'Username',
     GLOBAL_SIGN_IN_PASSWORD_PLACEHOLDER: 'Password',
-    GLOBAL_SIGN_IN_REMEMBER_ME: 'Remember me',
     GLOBAL_SIGN_IN_SUBMIT: 'Sign in',
     GLOBAL_SIGN_IN_CANCEL: 'Cancel',
 

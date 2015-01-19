@@ -63,11 +63,6 @@ Ext.define('NX.view.SignIn', {
             emptyText: NX.I18n.get('GLOBAL_SIGN_IN_PASSWORD_PLACEHOLDER'),
             allowBlank: false,
             validateOnBlur: false // allow cancel to be clicked w/o validating this to be non-blank
-          },
-          {
-            xtype: 'checkbox',
-            boxLabel: NX.I18n.get('GLOBAL_SIGN_IN_REMEMBER_ME'),
-            name: 'remember'
           }
         ],
 
