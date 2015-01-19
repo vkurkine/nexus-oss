@@ -26,6 +26,7 @@ import org.sonatype.nexus.repository.storage.StorageFacet;
 
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
+import org.joda.time.DateTime;
 
 /**
  * TODO: A temporary, in-memory {@link RawStorageFacet} until the {@link StorageFacet} changes are worked out.
@@ -46,11 +47,12 @@ public class InMemoryRawStorageFacet
   }
 
   @Override
-  public void put(final String path, final RawContent content) throws IOException {
+  public RawContent put(final String path, final RawContent content) throws IOException {
     try (InputStream inputStream = content.openInputStream()) {
 
       final RawContent byteContent = toByteArrayRawContent(content, inputStream);
       inMemory.put(path, byteContent);
+      return byteContent;
     }
   }
 
@@ -66,7 +68,7 @@ public class InMemoryRawStorageFacet
   {
     final String contentType = content.getContentType();
     final long size = content.getSize();
-
+    final DateTime lastModified = content.getLastModified();
 
     final byte[] bytes = ByteStreams.toByteArray(inputStream);
 
@@ -85,6 +87,11 @@ public class InMemoryRawStorageFacet
       @Override
       public InputStream openInputStream() throws IOException {
         return new ByteArrayInputStream(bytes);
+      }
+
+      @Override
+      public DateTime getLastModified() {
+        return lastModified;
       }
     };
   }

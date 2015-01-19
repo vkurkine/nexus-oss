@@ -82,8 +82,12 @@ public class RawStorageFacetImpl
     {
       @Override
       public Object execute(final GraphTx graph, final StorageFacet storage) throws IOException {
+        // Delete any existing asset at this path.
+        // TODO: This has transactional implications with blob replacement. Recall the old BlobTx code.
+        new DeleteAsset(path).execute(graph, storage);
 
         final Vertex asset = storage.createAsset(graph);
+        asset.setProperty(P_PATH, path);
 
         // TODO: Figure out created-by header
         final ImmutableMap<String, String> headers = ImmutableMap
@@ -95,7 +99,9 @@ public class RawStorageFacetImpl
         asset.setProperty(CONTENT_TYPE_PROPERTY, content.getContentType());
 
         final DateTime lastModified = content.getLastModified();
-        asset.setProperty(LAST_MODIFIED_PROPERTY, lastModified == null ? null : new Date(lastModified.getMillis()));
+        if (lastModified != null) {
+          asset.setProperty(LAST_MODIFIED_PROPERTY, new Date(lastModified.getMillis()));
+        }
 
         return marshall(asset, storage.getBlob(blobRef));
       }
@@ -104,26 +110,7 @@ public class RawStorageFacetImpl
 
   @Override
   public boolean delete(final String path) throws IOException {
-    return (boolean) inTx(new GraphOperation()
-    {
-      @Override
-      public Object execute(final GraphTx graph, final StorageFacet storage) {
-        final Vertex asset = storage.findAssetWithProperty(graph, P_PATH, path);
-        if (asset == null) {
-          return false;
-        }
-
-        final BlobRef blobRef = getBlobRef(path, asset);
-        final boolean delete = storage.deleteBlob(blobRef);
-        if (!delete) {
-          log.warn("Deleted asset {} referenced missing blob {}", path, blobRef);
-        }
-
-        storage.deleteVertex(graph, asset);
-
-        return true;
-      }
-    });
+    return (boolean) inTx(new DeleteAsset(path));
   }
 
   private static interface GraphOperation
@@ -178,5 +165,31 @@ public class RawStorageFacetImpl
         return lastModiifed;
       }
     };
+  }
+
+  private class DeleteAsset
+      implements GraphOperation
+  {
+    private final String path;
+
+    public DeleteAsset(final String path) {this.path = path;}
+
+    @Override
+    public Object execute(final GraphTx graph, final StorageFacet storage) {
+      final Vertex asset = storage.findAssetWithProperty(graph, P_PATH, path);
+      if (asset == null) {
+        return false;
+      }
+
+      final BlobRef blobRef = getBlobRef(path, asset);
+      final boolean delete = storage.deleteBlob(blobRef);
+      if (!delete) {
+        log.warn("Deleted asset {} referenced missing blob {}", path, blobRef);
+      }
+
+      storage.deleteVertex(graph, asset);
+
+      return true;
+    }
   }
 }
