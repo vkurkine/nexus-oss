@@ -21,7 +21,6 @@ import org.sonatype.security.model.CPrivilege;
 import org.sonatype.security.model.CRole;
 import org.sonatype.security.model.CUser;
 import org.sonatype.security.realms.tools.DefaultConfigurationManager;
-import org.sonatype.security.usermanagement.PasswordGenerator;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -35,12 +34,9 @@ import static org.hamcrest.Matchers.is;
 public class AuthenticatingRealmImplTest
     extends AbstractSecurityTestCase
 {
-
   private AuthenticatingRealmImpl realm;
 
   private DefaultConfigurationManager configurationManager;
-
-  private PasswordGenerator passwordGenerator;
 
   private PasswordService passwordService;
 
@@ -51,10 +47,7 @@ public class AuthenticatingRealmImplTest
     super.setUp();
 
     realm = (AuthenticatingRealmImpl) lookup(Realm.class, "NexusAuthenticatingRealm");
-
     configurationManager = lookup(DefaultConfigurationManager.class);
-
-    passwordGenerator = lookup(PasswordGenerator.class, "default");
     passwordService = lookup(PasswordService.class, "default");
   }
 
@@ -62,11 +55,8 @@ public class AuthenticatingRealmImplTest
     buildTestAuthenticationConfig(CUser.STATUS_ACTIVE);
 
     UsernamePasswordToken upToken = new UsernamePasswordToken("username", "password");
-
     AuthenticationInfo ai = realm.getAuthenticationInfo(upToken);
-
     String password = new String((char[]) ai.getCredentials());
-
     assertThat(this.passwordService.passwordsMatch("password", password), is(true));
   }
 
@@ -89,12 +79,10 @@ public class AuthenticatingRealmImplTest
     configurationManager.createUser(user, clearPassword, roles);
 
     UsernamePasswordToken upToken = new UsernamePasswordToken("testCreateWithPassowrdEmailUserId", clearPassword);
-
     AuthenticationInfo ai = realm.getAuthenticationInfo(upToken);
-
     String password = new String((char[]) ai.getCredentials());
 
-    assertThat(this.passwordService.passwordsMatch(clearPassword, password), is(true));
+    assertThat(passwordService.passwordsMatch(clearPassword, password), is(true));
   }
 
   public void testFailedAuthentication() throws Exception {
@@ -114,7 +102,6 @@ public class AuthenticatingRealmImplTest
 
   public void testDisabledAuthentication() throws Exception {
     buildTestAuthenticationConfig(CUser.STATUS_DISABLED);
-
     UsernamePasswordToken upToken = new UsernamePasswordToken("username", "password");
 
     try {
@@ -130,15 +117,14 @@ public class AuthenticatingRealmImplTest
   public void testDetectLegacyUser() throws Exception {
     String password = "password";
     String username = "username";
-    buildLegacyTestAuthenticationConfig(password);
 
     UsernamePasswordToken upToken = new UsernamePasswordToken(username, password);
     AuthenticationInfo ai = realm.getAuthenticationInfo(upToken);
     CUser updatedUser = this.configurationManager.readUser(username);
     String hash = new String((char[]) ai.getCredentials());
 
-    assertThat(this.passwordService.passwordsMatch(password, hash), is(true));
-    assertThat(this.passwordService.passwordsMatch(password, updatedUser.getPassword()), is(true));
+    assertThat(passwordService.passwordsMatch(password, hash), is(true));
+    assertThat(passwordService.passwordsMatch(password, updatedUser.getPassword()), is(true));
   }
 
   private void buildTestAuthenticationConfig(String status) throws InvalidConfigurationException {
@@ -178,15 +164,7 @@ public class AuthenticatingRealmImplTest
     configurationManager.createUser(testUser, roles);
   }
 
-  private void buildLegacyTestAuthenticationConfig(String password) throws InvalidConfigurationException {
-    buildTestAuthenticationConfig(CUser.STATUS_ACTIVE, this.legacyHashPassword(password));
-  }
-
   private String hashPassword(String password) {
-    return this.passwordService.encryptPassword(password);
-  }
-
-  private String legacyHashPassword(String password) {
-    return this.passwordGenerator.hashPassword(password);
+    return passwordService.encryptPassword(password);
   }
 }
