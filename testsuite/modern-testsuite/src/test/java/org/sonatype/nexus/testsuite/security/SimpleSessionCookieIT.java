@@ -161,6 +161,8 @@ public class SimpleSessionCookieIT
 
         Header[] setCookieHeaders = response.getHeaders(SET_COOKIE);
         Header sessionCookieHeader = getSessionCookieHeader(setCookieHeaders);
+        // FIXME add validation for rememberMe Cookie when fully implemented
+        Header rememberMeCookieHeader = getRememberMeCookieHeader(setCookieHeaders);
 
         List<Cookie> sessionCookies = spec.parse(sessionCookieHeader, cookieOrigin);
         loginCookie = (SetCookie) sessionCookies.get(0);
@@ -171,7 +173,7 @@ public class SimpleSessionCookieIT
             hasSize(1));
 
         assertThat(String
-            .format("expecting 1 %s headers for one session cookie , but got %s", SET_COOKIE,
+            .format("expecting 2 %s headers for login, one session cookie, one remember me, but got %s", SET_COOKIE,
                 setCookieHeaders), setCookieHeaders, arrayWithSize(2));
 
         assertThat("login cookie should NOT look like deleteMe cookie", loginCookie.getValue(), not(containsString(
@@ -207,8 +209,8 @@ public class SimpleSessionCookieIT
         assertCommonSessionCookieAttributes(nexusUrl, logoutCookie, headerText);
         assertThat("expecting one cookie in same Set-Cookie header", sessionCookies, hasSize(1));
         assertThat(String.format(
-            "expecting 1 %s headers for logout( one session delete cookie) but got %s",
-            SET_COOKIE, setCookieHeaders), setCookieHeaders, arrayWithSize(1));
+            "expecting 2 %s headers for logout, one session cookie delete cookie, one remember me delete cookie, but got %s",
+            SET_COOKIE, setCookieHeaders), setCookieHeaders, arrayWithSize(2));
         assertThat("logout session cookie value should be dummy value", logoutCookie.getValue(), equalTo("deleteMe"));
         assertThat("logout session cookie should be expired to tell browser to delete it",
             logoutCookie.isExpired(new Date()), is(true));

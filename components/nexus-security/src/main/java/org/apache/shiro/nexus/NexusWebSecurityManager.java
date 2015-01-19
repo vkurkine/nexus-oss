@@ -41,8 +41,6 @@ public class NexusWebSecurityManager
   @Inject
   public NexusWebSecurityManager(final Provider<EventBus> eventBus) {
     this.eventBus = checkNotNull(eventBus);
-    //disables all RememberMe functionality
-    this.setRememberMeManager(null);
   }
 
   /**

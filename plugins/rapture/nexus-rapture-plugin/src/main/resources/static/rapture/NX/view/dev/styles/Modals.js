@@ -74,6 +74,11 @@ Ext.define('NX.view.dev.styles.Modals', {
               emptyText: 'enter your password',
               allowBlank: false,
               validateOnBlur: false // allow cancel to be clicked w/o validating this to be non-blank
+            },
+            {
+              xtype: 'checkbox',
+              fieldLabel: 'Remember me',
+              name: 'remember'
             }
           ],
 
