@@ -10,6 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
+
 package org.sonatype.security.realms;
 
 import java.util.HashSet;
@@ -22,6 +23,8 @@ import org.sonatype.security.model.CRole;
 import org.sonatype.security.model.CUser;
 import org.sonatype.security.realms.tools.DefaultConfigurationManager;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -117,6 +120,7 @@ public class AuthenticatingRealmImplTest
   public void testDetectLegacyUser() throws Exception {
     String password = "password";
     String username = "username";
+    buildLegacyTestAuthenticationConfig(password);
 
     UsernamePasswordToken upToken = new UsernamePasswordToken(username, password);
     AuthenticationInfo ai = realm.getAuthenticationInfo(upToken);
@@ -166,5 +170,13 @@ public class AuthenticatingRealmImplTest
 
   private String hashPassword(String password) {
     return passwordService.encryptPassword(password);
+  }
+
+  private String legacyHashPassword(String password) {
+    return Hashing.sha1().hashString(password, Charsets.UTF_8).toString();
+  }
+
+  private void buildLegacyTestAuthenticationConfig(String password) throws InvalidConfigurationException {
+    buildTestAuthenticationConfig(CUser.STATUS_ACTIVE, legacyHashPassword(password));
   }
 }
