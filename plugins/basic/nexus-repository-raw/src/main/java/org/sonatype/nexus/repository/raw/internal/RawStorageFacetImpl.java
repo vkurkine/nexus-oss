@@ -32,7 +32,7 @@ import com.tinkerpop.blueprints.Vertex;
 import org.joda.time.DateTime;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.sonatype.nexus.repository.storage.StorageService.P_PATH;
+import static org.sonatype.nexus.repository.storage.StorageFacet.P_PATH;
 
 /**
  * A {@link RawStorageFacet} that persists to a {@link StorageFacet}.
@@ -60,7 +60,7 @@ public class RawStorageFacetImpl
     {
       @Override
       public Object execute(final GraphTx graph, final StorageFacet storage) {
-        final Vertex asset = storage.findAssetWithProperty(graph, P_PATH, path);
+        final Vertex asset = storage.findAssetWithProperty(graph, P_PATH, path, storage.getBucket(graph));
         if (asset == null) {
           return null;
         }
@@ -86,7 +86,7 @@ public class RawStorageFacetImpl
         // TODO: This has transactional implications with blob replacement. Recall the old BlobTx code.
         new DeleteAsset(path).execute(graph, storage);
 
-        final Vertex asset = storage.createAsset(graph);
+        final Vertex asset = storage.createAsset(graph, storage.getBucket(graph));
         asset.setProperty(P_PATH, path);
 
         // TODO: Figure out created-by header
@@ -176,7 +176,7 @@ public class RawStorageFacetImpl
 
     @Override
     public Object execute(final GraphTx graph, final StorageFacet storage) {
-      final Vertex asset = storage.findAssetWithProperty(graph, P_PATH, path);
+      final Vertex asset = storage.findAssetWithProperty(graph, P_PATH, path, storage.getBucket(graph));
       if (asset == null) {
         return false;
       }

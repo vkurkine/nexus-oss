@@ -33,54 +33,107 @@ import com.tinkerpop.blueprints.Vertex;
 public interface StorageFacet
   extends Facet
 {
+  static String E_CONTAINS_COMPONENTS_WITH_LABEL = "contains_components_with_label";
+
+  static String E_HAS_LABEL = "has_label";
+
+  static String E_OWNS_ASSET = "owns_asset";
+
+  static String E_OWNS_COMPONENT = "owns_component";
+
+  static String E_PART_OF_COMPONENT = "part_of_component";
+
+  static String P_BLOB_REF = "blob_ref";
+
+  static String P_CONTENT_TYPE = "content_type";
+
+  static String P_PATH = "path";
+
+  static String P_REPOSITORY_NAME = "repository_name";
+
+  static String V_ASSET = "asset";
+
+  static String V_COMPONENT = "component";
+
+  static String V_LABEL = "label";
+
+  static String V_BUCKET = "bucket";
+
   /**
    * Gets a transaction for working with the graph.
    */
   GraphTx getGraphTx();
 
   /**
-   * Gets all assets owned by the repository.
+   * Gets the bucket for the current repository.
    */
-  Iterable<Vertex> browseAssets(GraphTx graph);
+  Vertex getBucket(GraphTx graph);
 
   /**
-   * Gets all components owned by the repository.
+   * Gets all assets owned by the specified bucket.
    */
-  Iterable<Vertex> browseComponents(GraphTx graph);
+  Iterable<Vertex> browseAssets(Vertex bucket);
 
   /**
-   * Gets an asset by id, or {@code null} if not found.
+   * Gets all components owned by the specified bucket.
+   */
+  Iterable<Vertex> browseComponents(Vertex bucket);
+
+  /**
+   * Gets all vertices, optionally limited to those in the specified class.
+   */
+  Iterable<Vertex> browseVertices(GraphTx graph, @Nullable String className);
+
+  /**
+   * Gets an asset by id, owned by the specified bucket, or {@code null} if not found.
    */
   @Nullable
-  Vertex findAsset(GraphTx graph, Object vertexId);
+  Vertex findAsset(GraphTx graph, Object vertexId, Vertex bucket);
 
   /**
-   * Gets an asset by some other identifying property, or {@code null} if not found.
+   * Gets an asset by some identifying property, owned by the specified bucket, or {@code null} if not found.
    */
   @Nullable
-  Vertex findAssetWithProperty(GraphTx graph, String propName, Object propValue);
+  Vertex findAssetWithProperty(GraphTx graph, String propName, Object propValue, Vertex bucket);
 
   /**
-   * Gets a component by id, or {@code null} if not found.
+   * Gets a component by id, owned by the specified bucket, or {@code null} if not found.
    */
   @Nullable
-  Vertex findComponent(GraphTx graph, Object vertexId);
+  Vertex findComponent(GraphTx graph, Object vertexId, Vertex bucket);
 
   /**
-   * Gets a component by some other identifying property, or {@code null} if not found.
+   * Gets a component by some identifying property, or {@code null} if not found.
    */
   @Nullable
-  Vertex findComponentWithProperty(GraphTx graph, String propName, Object propValue);
+  Vertex findComponentWithProperty(GraphTx graph, String propName, Object propValue, Vertex bucket);
 
   /**
-   * Creates a new asset.
+   * Gets a vertex by id, optionally limited by class, or {@code null} if not found.
    */
-  Vertex createAsset(GraphTx graph);
+  @Nullable
+  Vertex findVertex(GraphTx graph, Object vertexId, @Nullable String className);
 
   /**
-   * Creates a new component.
+   * Gets a vertex by some identifying property, optionally limited by class, or {@code null} if not found.
    */
-  Vertex createComponent(GraphTx graph);
+  @Nullable
+  Vertex findVertexWithProperty(GraphTx graph, String propName, Object propValue, @Nullable String className);
+
+  /**
+   * Creates a new asset owned by the specified bucket.
+   */
+  Vertex createAsset(GraphTx graph, Vertex bucket);
+
+  /**
+   * Creates a new component owned by the specified bucket.
+   */
+  Vertex createComponent(GraphTx graph, Vertex bucket);
+
+  /**
+   * Creates a new vertex of the specified class.
+   */
+  Vertex createVertex(GraphTx graph, String className);
 
   /**
    * Deletes an existing vertex.
@@ -93,7 +146,7 @@ public interface StorageFacet
   BlobRef createBlob(InputStream inputStream, Map<String, String> headers);
 
   /**
-   * Gets a Blob.
+   * Gets a Blob, or {@code null if not found}.
    */
   @Nullable
   Blob getBlob(BlobRef blobRef);

@@ -16,6 +16,7 @@ package org.sonatype.nexus.repository.storage;
 import org.sonatype.nexus.blobstore.api.BlobStoreManager;
 import org.sonatype.nexus.orient.DatabaseInstanceRule;
 import org.sonatype.nexus.orient.graph.GraphTx;
+import org.sonatype.nexus.repository.Repository;
 import org.sonatype.sisu.goodies.eventbus.EventBus;
 import org.sonatype.sisu.litmus.testsupport.TestSupport;
 
@@ -32,29 +33,33 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.sonatype.nexus.repository.storage.StorageService.P_PATH;
-import static org.sonatype.nexus.repository.storage.StorageService.V_ASSET;
-import static org.sonatype.nexus.repository.storage.StorageService.V_BUCKET;
-import static org.sonatype.nexus.repository.storage.StorageService.V_COMPONENT;
+import static org.mockito.Mockito.when;
+import static org.sonatype.nexus.repository.storage.StorageFacet.P_PATH;
+import static org.sonatype.nexus.repository.storage.StorageFacet.V_ASSET;
+import static org.sonatype.nexus.repository.storage.StorageFacet.V_BUCKET;
+import static org.sonatype.nexus.repository.storage.StorageFacet.V_COMPONENT;
 
 /**
- * Integration tests for {@link StorageServiceImpl}.
+ * Integration tests for {@link StorageFacetImpl}.
  */
-public class StorageServiceImplIT
+public class StorageFacetImplIT
     extends TestSupport
 {
   @Rule
   public DatabaseInstanceRule database = new DatabaseInstanceRule("test");
 
-  protected StorageService underTest;
+  protected StorageFacetImpl underTest;
 
   @Before
   public void setUp() throws Exception {
-    underTest = new StorageServiceImpl(
-        mock(EventBus.class),
+    underTest = new StorageFacetImpl(
         mock(BlobStoreManager.class),
         Providers.of(database.getInstance())
     );
+    underTest.installDependencies(mock(EventBus.class));
+    Repository mockRepository = mock(Repository.class);
+    when(mockRepository.getName()).thenReturn("test-repository");
+    underTest.init(mockRepository);
     underTest.start();
   }
 
@@ -66,7 +71,9 @@ public class StorageServiceImplIT
   @Test
   public void initialState() {
     try (GraphTx graph = underTest.getGraphTx()) {
-      checkSize(underTest.browseVertices(graph, null), 0);
+      // We should have one bucket, which was auto-created for the repository during initialization
+      checkSize(underTest.browseVertices(graph, null), 1);
+      checkSize(underTest.browseVertices(graph, V_BUCKET), 1);
     }
   }
 
@@ -79,8 +86,8 @@ public class StorageServiceImplIT
       Vertex bucket1 = underTest.createVertex(graph, V_BUCKET);
       Vertex bucket2 = underTest.createVertex(graph, V_BUCKET);
 
-      checkSize(underTest.browseVertices(graph, null), 2);
-      checkSize(underTest.browseVertices(graph, V_BUCKET), 2);
+      checkSize(underTest.browseVertices(graph, null), 3);
+      checkSize(underTest.browseVertices(graph, V_BUCKET), 3);
       checkSize(underTest.browseVertices(graph, V_ASSET), 0);
       checkSize(underTest.browseVertices(graph, V_COMPONENT), 0);
 
@@ -92,18 +99,18 @@ public class StorageServiceImplIT
       assertNull(underTest.findVertex(graph, bucket2.getId(), V_ASSET));
 
       // Create an asset and component, one in each bucket, and verify state with browse and find
-      Vertex asset = underTest.createAssetOwnedBy(graph, bucket1);
+      Vertex asset = underTest.createAsset(graph, bucket1);
       asset.setProperty(P_PATH, "path");
-      Vertex component = underTest.createComponentOwnedBy(graph, bucket2);
+      Vertex component = underTest.createComponent(graph, bucket2);
       component.setProperty("foo", "bar");
 
       checkSize(underTest.browseVertices(graph, V_ASSET), 1);
       checkSize(underTest.browseVertices(graph, V_COMPONENT), 1);
       checkSize(underTest.browseVertices(graph, V_ASSET), 1);
-      checkSize(underTest.browseAssetsOwnedBy(bucket1), 1);
-      checkSize(underTest.browseAssetsOwnedBy(bucket2), 0);
-      checkSize(underTest.browseComponentsOwnedBy(bucket1), 0);
-      checkSize(underTest.browseComponentsOwnedBy(bucket2), 1);
+      checkSize(underTest.browseAssets(bucket1), 1);
+      checkSize(underTest.browseAssets(bucket2), 0);
+      checkSize(underTest.browseComponents(bucket1), 0);
+      checkSize(underTest.browseComponents(bucket2), 1);
 
       assertNotNull(underTest.findVertex(graph, asset.getId(), V_ASSET));
       assertNotNull(underTest.findVertex(graph, component.getId(), V_COMPONENT));
@@ -111,17 +118,17 @@ public class StorageServiceImplIT
       assertNull(underTest.findVertexWithProperty(graph, P_PATH, "nomatch", null));
       assertNotNull(underTest.findVertexWithProperty(graph, P_PATH, "path", null));
       assertNotNull(underTest.findVertexWithProperty(graph, P_PATH, "path", V_ASSET));
-      assertNotNull(underTest.findAssetWithPropertyOwnedBy(graph, P_PATH, "path", bucket1));
-      assertNull(underTest.findAssetWithPropertyOwnedBy(graph, P_PATH, "nomatch", bucket1));
-      assertNull(underTest.findAssetWithPropertyOwnedBy(graph, P_PATH, "path", bucket2));
+      assertNotNull(underTest.findAssetWithProperty(graph, P_PATH, "path", bucket1));
+      assertNull(underTest.findAssetWithProperty(graph, P_PATH, "nomatch", bucket1));
+      assertNull(underTest.findAssetWithProperty(graph, P_PATH, "path", bucket2));
       assertNull(underTest.findVertex(graph, bucket2.getId(), V_ASSET));
 
       assertNull(underTest.findVertexWithProperty(graph, "foo", "nomatch", null));
       assertNotNull(underTest.findVertexWithProperty(graph, "foo", "bar", null));
       assertNotNull(underTest.findVertexWithProperty(graph, "foo", "bar", V_COMPONENT));
-      assertNotNull(underTest.findComponentWithPropertyOwnedBy(graph, "foo", "bar", bucket2));
-      assertNull(underTest.findComponentWithPropertyOwnedBy(graph, "foo", "nomatch", bucket2));
-      assertNull(underTest.findComponentWithPropertyOwnedBy(graph, "foo", "bar", bucket1));
+      assertNotNull(underTest.findComponentWithProperty(graph, "foo", "bar", bucket2));
+      assertNull(underTest.findComponentWithProperty(graph, "foo", "nomatch", bucket2));
+      assertNull(underTest.findComponentWithProperty(graph, "foo", "bar", bucket1));
       assertNull(underTest.findVertex(graph, bucket2.getId(), V_COMPONENT));
 
       // Delete both and make sure browse and find behave as expected
